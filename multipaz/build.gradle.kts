@@ -16,6 +16,8 @@ plugins {
 val projectVersionCode: Int by rootProject.extra
 val projectVersionName: String by rootProject.extra
 
+val buildIos = project.findProperty("buildIos") == "true"
+
 kotlin {
     jvmToolchain(17)
 
@@ -35,38 +37,40 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        val platform = when (it.name) {
-            "iosX64" -> "iphonesimulator"
-            "iosArm64" -> "iphoneos"
-            "iosSimulatorArm64" -> "iphonesimulator"
-            else -> error("Unsupported target ${it.name}")
-        }
-        if (HostManager.hostIsMac) {
-            it.compilations.getByName("main") {
-                val SwiftBridge by cinterops.creating {
-                    definitionFile.set(project.file("nativeInterop/cinterop/SwiftBridge-$platform.def"))
-                    includeDirs.headerFilterOnly("$rootDir/multipaz/SwiftBridge/build/Release-$platform/include")
-
-                    val interopTask = tasks[interopProcessingTaskName]
-                    val capitalizedPlatform = platform.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase()
-                        else it.toString()
+    if (buildIos) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach {
+            val platform = when (it.name) {
+                "iosX64" -> "iphonesimulator"
+                "iosArm64" -> "iphoneos"
+                "iosSimulatorArm64" -> "iphonesimulator"
+                else -> error("Unsupported target ${it.name}")
+            }
+            if (HostManager.hostIsMac) {
+                it.compilations.getByName("main") {
+                    val SwiftBridge by cinterops.creating {
+                        definitionFile.set(project.file("nativeInterop/cinterop/SwiftBridge-$platform.def"))
+                        includeDirs.headerFilterOnly("$rootDir/multipaz/SwiftBridge/build/Release-$platform/include")
+    
+                        val interopTask = tasks[interopProcessingTaskName]
+                        val capitalizedPlatform = platform.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase()
+                            else it.toString()
+                        }
+                        interopTask.dependsOn(":multipaz:SwiftBridge:build${capitalizedPlatform}")
                     }
-                    interopTask.dependsOn(":multipaz:SwiftBridge:build${capitalizedPlatform}")
-                }
-
-                it.binaries.all {
-                    // Linker options required to link to the library.
-                    linkerOpts(
-                        "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${platform}/",
-                        "-L$rootDir/multipaz/SwiftBridge/build/Release-${platform}/",
-                        "-lSwiftBridge"
-                    )
+    
+                    it.binaries.all {
+                        // Linker options required to link to the library.
+                        linkerOpts(
+                            "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${platform}/",
+                            "-L$rootDir/multipaz/SwiftBridge/build/Release-${platform}/",
+                            "-lSwiftBridge"
+                        )
+                    }
                 }
             }
         }
@@ -129,15 +133,17 @@ kotlin {
             }
         }
 
-        val iosMain by getting {
-            dependencies {
-                // This dependency is needed for SqliteStorage implementation.
-                // KMP-compatible version is still alpha and it is not compatible with
-                // other androidx packages, particularly androidx.work that we use in wallet.
-                // TODO: once compatibility issues are resolved, SqliteStorage and this
-                // dependency can be moved into commonMain.
-                implementation(libs.androidx.sqlite)
-                implementation(libs.androidx.sqlite.framework)
+        if (buildIos) {
+            val iosMain by getting {
+                dependencies {
+                    // This dependency is needed for SqliteStorage implementation.
+                    // KMP-compatible version is still alpha and it is not compatible with
+                    // other androidx packages, particularly androidx.work that we use in wallet.
+                    // TODO: once compatibility issues are resolved, SqliteStorage and this
+                    // dependency can be moved into commonMain.
+                    implementation(libs.androidx.sqlite)
+                    implementation(libs.androidx.sqlite.framework)
+                }
             }
         }
 
@@ -173,11 +179,13 @@ kotlin {
             }
         }
 
-        val iosTest by getting {
-            dependencies {
-                implementation(libs.androidx.sqlite)
-                implementation(libs.androidx.sqlite.framework)
-                implementation(libs.androidx.sqlite.bundled)
+        if (buildIos) {
+            val iosTest by getting {
+                dependencies {
+                    implementation(libs.androidx.sqlite)
+                    implementation(libs.androidx.sqlite.framework)
+                    implementation(libs.androidx.sqlite.bundled)
+                }
             }
         }
     }
@@ -190,16 +198,20 @@ dependencies {
 
 tasks.all {
     if (name == "compileDebugKotlinAndroid" || name == "compileReleaseKotlinAndroid" ||
-        name == "androidReleaseSourcesJar" || name == "iosArm64SourcesJar" ||
-        name == "iosSimulatorArm64SourcesJar" || name == "iosX64SourcesJar" ||
+        name == "androidReleaseSourcesJar" || 
+        (buildIos && name == "iosArm64SourcesJar") ||
+        (buildIos && name == "iosSimulatorArm64SourcesJar") ||
+        (buildIos && name == "iosX64SourcesJar") ||
         name == "jvmSourcesJar" || name == "sourcesJar") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
 
-tasks["compileKotlinIosX64"].dependsOn("kspCommonMainKotlinMetadata")
-tasks["compileKotlinIosArm64"].dependsOn("kspCommonMainKotlinMetadata")
-tasks["compileKotlinIosSimulatorArm64"].dependsOn("kspCommonMainKotlinMetadata")
+if (buildIos) {
+    tasks["compileKotlinIosX64"].dependsOn("kspCommonMainKotlinMetadata")
+    tasks["compileKotlinIosArm64"].dependsOn("kspCommonMainKotlinMetadata")
+    tasks["compileKotlinIosSimulatorArm64"].dependsOn("kspCommonMainKotlinMetadata")
+}
 tasks["compileKotlinJvm"].dependsOn("kspCommonMainKotlinMetadata")
 
 tasks.withType<Test> {

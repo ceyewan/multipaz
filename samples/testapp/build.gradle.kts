@@ -14,6 +14,8 @@ plugins {
 val projectVersionCode: Int by rootProject.extra
 val projectVersionName: String by rootProject.extra
 
+val buildIos = project.findProperty("buildIos") == "true"
+
 buildConfig {
     packageName("org.multipaz.testapp")
     buildConfigField("VERSION", projectVersionName)
@@ -36,39 +38,43 @@ kotlin {
         }
     }
     
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "TestApp"
-            isStatic = true
-            linkerOpts.add("-framework CoreVideo")
+    if (buildIos) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach { iosTarget ->
+            iosTarget.binaries.framework {
+                baseName = "TestApp"
+                isStatic = true
+                linkerOpts.add("-framework CoreVideo")
+            }
         }
     }
 
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val iosMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.darwin)
-                implementation(libs.androidx.sqlite)
-                implementation(libs.androidx.sqlite.framework)
+        if (buildIos) {
+            val iosMain by getting {
+                dependencies {
+                    implementation(libs.ktor.client.darwin)
+                    implementation(libs.androidx.sqlite)
+                    implementation(libs.androidx.sqlite.framework)
+                }
             }
-        }
-
-        val iosX64Main by getting {
-            dependencies {}
-        }
-
-        val iosArm64Main by getting {
-            dependencies {}
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependencies {}
+    
+            val iosX64Main by getting {
+                dependencies {}
+            }
+    
+            val iosArm64Main by getting {
+                dependencies {}
+            }
+    
+            val iosSimulatorArm64Main by getting {
+                dependencies {}
+            }
         }
 
         val androidMain by getting {
@@ -180,13 +186,18 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
     if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
+        val kspTask = tasks.findByName("kspCommonMainKotlinMetadata")
+        if (kspTask != null) {
+            dependsOn(kspTask)
+        }
     }
 }
 
-tasks["compileKotlinIosX64"].dependsOn("kspCommonMainKotlinMetadata")
-tasks["compileKotlinIosArm64"].dependsOn("kspCommonMainKotlinMetadata")
-tasks["compileKotlinIosSimulatorArm64"].dependsOn("kspCommonMainKotlinMetadata")
+if (buildIos) {
+    tasks["compileKotlinIosX64"].dependsOn("kspCommonMainKotlinMetadata")
+    tasks["compileKotlinIosArm64"].dependsOn("kspCommonMainKotlinMetadata")
+    tasks["compileKotlinIosSimulatorArm64"].dependsOn("kspCommonMainKotlinMetadata")
+}
 
 subprojects {
 	apply(plugin = "org.jetbrains.dokka")

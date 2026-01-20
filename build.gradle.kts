@@ -3,13 +3,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 // For `versionCode` we just use the number of commits.
 val projectVersionCode: Int by extra {
-    val stdout = ByteArrayOutputStream()
-    rootProject.exec {
-        commandLine("git", "rev-list", "HEAD", "--count")
-        standardOutput = stdout
-    }
-    @Suppress("DEPRECATION") // toString() is deprecated.
-    stdout.toString().trim().toInt()
+    1
 }
 
 // The version number of the project.
@@ -20,14 +14,14 @@ val projectVersionCode: Int by extra {
 val projectVersionLast = "0.95.0"
 val projectVersionNext = ""
 
-private fun runCommand(args: List<String>): String {
-    val stdout = ByteArrayOutputStream()
-    rootProject.exec {
-        commandLine(args)
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
+// private fun runCommand(args: List<String>): String {
+//     val stdout = ByteArrayOutputStream()
+//     rootProject.exec {
+//         commandLine(args)
+//         standardOutput = stdout
+//     }
+//     return stdout.toString().trim()
+// }
 
 // Generate a project version meeting the requirements of Semantic Versioning 2.0.0
 // according to https://semver.org/
@@ -38,13 +32,7 @@ private fun runCommand(args: List<String>): String {
 // where we cut the pre-release from. Example: 0.91.0-pre.48.574b479c
 //
 val projectVersionName: String by extra {
-    if (projectVersionNext.isEmpty()) {
-        projectVersionLast
-    } else {
-        val numCommitsSinceTag = runCommand(listOf("git", "rev-list", "${projectVersionLast}..", "--count"))
-        val commitHash = runCommand(listOf("git", "rev-parse", "--short", "HEAD"))
-        projectVersionNext + "-pre.${numCommitsSinceTag}.${commitHash}"
-    }
+    "0.95.0-debug"
 }
 
 tasks.register("printVersionName") {
