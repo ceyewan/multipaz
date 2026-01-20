@@ -11,6 +11,8 @@ plugins {
 val projectVersionCode: Int by rootProject.extra
 val projectVersionName: String by rootProject.extra
 
+val buildIos = project.findProperty("buildIos") == "true"
+
 kotlin {
     jvmToolchain(17)
 
@@ -30,13 +32,15 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "longfellow"
+    if (buildIos) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach {
+            it.binaries.framework {
+                baseName = "longfellow"
+            }
         }
     }
 

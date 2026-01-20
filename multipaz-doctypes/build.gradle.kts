@@ -8,6 +8,8 @@ plugins {
 val projectVersionCode: Int by rootProject.extra
 val projectVersionName: String by rootProject.extra
 
+val buildIos = project.findProperty("buildIos") == "true"
+
 kotlin {
     jvmToolchain(17)
 
@@ -17,21 +19,23 @@ kotlin {
 
     jvm()
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        val platform = when (it.name) {
-            "iosX64" -> "iphonesimulator"
-            "iosArm64" -> "iphoneos"
-            "iosSimulatorArm64" -> "iphonesimulator"
-            else -> error("Unsupported target ${it.name}")
-        }
-        it.binaries.all {
-            linkerOpts(
-                "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${platform}/",
-            )
+    if (buildIos) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach {
+            val platform = when (it.name) {
+                "iosX64" -> "iphonesimulator"
+                "iosArm64" -> "iphoneos"
+                "iosSimulatorArm64" -> "iphonesimulator"
+                else -> error("Unsupported target ${it.name}")
+            }
+            it.binaries.all {
+                linkerOpts(
+                    "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${platform}/",
+                )
+            }
         }
     }
 

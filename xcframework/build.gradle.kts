@@ -9,37 +9,41 @@ plugins {
 val projectVersionCode: Int by rootProject.extra
 val projectVersionName: String by rootProject.extra
 
+val buildIos = project.findProperty("buildIos") == "true"
+
 kotlin {
     val xcFrameworkName = "Multipaz"
     val xcf = XCFramework(xcFrameworkName)
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            export(project(":multipaz"))
-            export(project(":multipaz-dcapi"))
-            export(project(":multipaz-doctypes"))
-            export(project(":multipaz-longfellow"))
-            export(libs.kotlinx.io.bytestring)
-            export(libs.kotlinx.io.core)
-            export(libs.kotlinx.datetime)
-            export(libs.kotlinx.coroutines.core)
-            export(libs.kotlinx.serialization.json)
-            export(libs.ktor.client.core)
-            baseName = xcFrameworkName
-            binaryOption("bundleId", "org.multipaz.${xcFrameworkName}")
-            binaryOption("bundleVersion", projectVersionCode.toString())
-            binaryOption("bundleShortVersionString", projectVersionName)
-            freeCompilerArgs += listOf(
-                "-Xoverride-konan-properties=minVersion.ios=16.0;minVersionSinceXcode15.ios=16.0",
-                // Uncomment the following to get Garbage Collection logging when using the framework:
-                //
-                // "-Xruntime-logs=gc=info"
-            )
-            linkerOpts("-lsqlite3")
-            xcf.add(this)
+    if (buildIos) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        ).forEach {
+            it.binaries.framework {
+                export(project(":multipaz"))
+                export(project(":multipaz-dcapi"))
+                export(project(":multipaz-doctypes"))
+                export(project(":multipaz-longfellow"))
+                export(libs.kotlinx.io.bytestring)
+                export(libs.kotlinx.io.core)
+                export(libs.kotlinx.datetime)
+                export(libs.kotlinx.coroutines.core)
+                export(libs.kotlinx.serialization.json)
+                export(libs.ktor.client.core)
+                baseName = xcFrameworkName
+                binaryOption("bundleId", "org.multipaz.${xcFrameworkName}")
+                binaryOption("bundleVersion", projectVersionCode.toString())
+                binaryOption("bundleShortVersionString", projectVersionName)
+                freeCompilerArgs += listOf(
+                    "-Xoverride-konan-properties=minVersion.ios=16.0;minVersionSinceXcode15.ios=16.0",
+                    // Uncomment the following to get Garbage Collection logging when using the framework:
+                    //
+                    // "-Xruntime-logs=gc=info"
+                )
+                linkerOpts("-lsqlite3")
+                xcf.add(this)
+            }
         }
     }
 
