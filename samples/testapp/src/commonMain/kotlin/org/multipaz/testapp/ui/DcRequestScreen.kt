@@ -339,8 +339,8 @@ private suspend fun doDcRequestFlow(
         )
     )
     val metadata = ShowResponseMetadata(
-        engagementType = "OS-provided CredentialManager API",
-        transferProtocol = "W3C Digital Credentials (${protocol.displayName})",
+        engagementType = "操作系统提供的凭证管理器API",
+        transferProtocol = "W3C数字凭证 (${protocol.displayName})",
         requestSize = Json.encodeToString(dcRequestObject).length.toLong(),
         responseSize = Json.encodeToString(dcResponseObject).length.toLong(),
         durationMsecNfcTapToEngagement = null,

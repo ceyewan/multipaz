@@ -151,7 +151,7 @@ fun IsoMdocProximityReadingScreen(
         val radioOptions = connectionMethodPickerData.value!!.connectionMethods
         val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
         AlertDialog(
-            title = @Composable { Text(text = "Select Connection Method") },
+            title = @Composable { Text(text = "选择连接方式") },
             text = @Composable {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Column(
@@ -192,7 +192,7 @@ fun IsoMdocProximityReadingScreen(
                         connectionMethodPickerData.value = null
                     }
                 ) {
-                    Text("Cancel")
+                    Text("取消")
                 }
             },
             onDismissRequest = {
@@ -206,7 +206,7 @@ fun IsoMdocProximityReadingScreen(
                         connectionMethodPickerData.value = null
                     }
                 ) {
-                    Text("Connect")
+                    Text("连接")
                 }
             }
         )
@@ -214,9 +214,9 @@ fun IsoMdocProximityReadingScreen(
 
     if (readerShowQrScanner.value) {
         ScanQrCodeDialog(
-            title = { Text(text = "Scan QR code") },
-            text = { Text(text = "Scan this QR code on another device") },
-            dismissButton = "Close",
+            title = { Text(text = "扫描二维码") },
+            text = { Text(text = "在另一台设备上扫描此二维码") },
+            dismissButton = "关闭",
             onCodeScanned = { data ->
                 if (data.startsWith("mdoc:")) {
                     readerShowQrScanner.value = false
@@ -267,7 +267,7 @@ fun IsoMdocProximityReadingScreen(
                                     /* nonce = */ null,
                                     /* eReaderKey */ eReaderKey.value!!,
                                     /* metadata = */ ShowResponseMetadata(
-                                        engagementType = "QR Code",
+                                        engagementType = "二维码",
                                         transferProtocol = transferProtocol,
                                         requestSize = readerMostRecentDeviceRequest.value?.size?.toLong() ?: 0L,
                                         responseSize = readerMostRecentDeviceResponse.value?.size?.toLong() ?: 0L,
@@ -307,7 +307,7 @@ fun IsoMdocProximityReadingScreen(
                     }
                 }
             ) {
-                Text("Request BLE permissions")
+                Text("请求蓝牙权限")
             }
         }
     }  else if (!bleEnabledState.isEnabled) {
@@ -323,7 +323,7 @@ fun IsoMdocProximityReadingScreen(
                     }
                 }
             ) {
-                Text("Enable Bluetooth")
+                Text("启用蓝牙")
             }
         }
     } else {
@@ -375,7 +375,7 @@ fun IsoMdocProximityReadingScreen(
                             }
                         }
                     ) {
-                        Text("Send Another Request")
+                        Text("发送另一个请求")
                     }
                     Button(
                         onClick = {
@@ -393,7 +393,7 @@ fun IsoMdocProximityReadingScreen(
                             }
                         }
                     ) {
-                        Text("Close (Message)")
+                        Text("关闭（消息）")
                     }
                     Button(
                         onClick = {
@@ -409,7 +409,7 @@ fun IsoMdocProximityReadingScreen(
                             }
                         }
                     ) {
-                        Text("Close (Transport-Specific)")
+                        Text("关闭（传输特定）")
                     }
                     Button(
                         onClick = {
@@ -424,7 +424,7 @@ fun IsoMdocProximityReadingScreen(
                             }
                         }
                     ) {
-                        Text("Close (None)")
+                        Text("关闭（无）")
                     }
                 }
             }
@@ -449,7 +449,7 @@ fun IsoMdocProximityReadingScreen(
                     Button(
                         onClick = { readerMostRecentDeviceResponse.value = null }
                     ) {
-                        Text("Close")
+                        Text("关闭")
                     }
                 }
             }
@@ -473,7 +473,7 @@ fun IsoMdocProximityReadingScreen(
                             readerShowQrScanner.value = true
                             readerMostRecentDeviceResponse.value = null
                         },
-                        content = { Text("Request mdoc via QR Code") }
+                        content = { Text("通过二维码请求mdoc") }
                     )
                 }
                 item {
@@ -585,9 +585,9 @@ fun IsoMdocProximityReadingScreen(
                                         if (readerMostRecentDeviceResponse.value != null) {
                                             with(Dispatchers.Main) {
                                                 val nfcEngagementType = if (scanResult.handover.asArray[1] == Simple.NULL) {
-                                                    "NFC Static Handover"
+                                                    "NFC静态交互"
                                                 } else {
-                                                    "NFC Negotiated Handover"
+                                                    "NFC协商交互"
                                                 }
                                                 showResponse(
                                                     /* vpToken = */ null,
@@ -618,7 +618,7 @@ fun IsoMdocProximityReadingScreen(
                                 }
                             }
                         },
-                        content = { Text("Request mdoc via NFC") }
+                        content = { Text("通过NFC请求mdoc") }
                     )
                 }
                 item {
@@ -633,7 +633,7 @@ fun IsoMdocProximityReadingScreen(
                             },
                         )
                         Text(
-                            text = "Insert polling frames for Observe Mode",
+                            text = "为观察模式插入轮询帧",
                         )
                     }
                 }

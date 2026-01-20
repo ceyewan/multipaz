@@ -72,7 +72,7 @@ fun ScanQrCodeDialog(
                                 }
                             }
                         ) {
-                            Text("Request Camera permission")
+                            Text("请求摄像头权限")
                         }
                     }
                 } else {

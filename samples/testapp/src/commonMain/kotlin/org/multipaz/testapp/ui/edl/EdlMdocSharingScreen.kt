@@ -1,26 +1,19 @@
-package org.multipaz.testapp.ui
+package org.multipaz.testapp.ui.edl
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.ImageLoader
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import org.multipaz.compose.permissions.rememberBluetoothEnabledState
-import org.multipaz.compose.permissions.rememberBluetoothPermissionState
+import org.multipaz.testapp.platformAppIcon
 import org.multipaz.compose.presentment.MdocProximityQrPresentment
 import org.multipaz.compose.presentment.MdocProximityQrSettings
 import org.multipaz.compose.qrcode.generateQrCode
@@ -33,67 +26,58 @@ import org.multipaz.presentment.model.PresentmentModel
 import org.multipaz.presentment.model.PresentmentSource
 import org.multipaz.prompt.PromptModel
 import org.multipaz.testapp.TestAppSettingsModel
-import org.multipaz.testapp.platformAppIcon
-import org.multipaz.testapp.platformAppName
 import org.multipaz.util.UUID
 
-private const val TAG = "IsoMdocProximitySharingScreen"
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IsoMdocProximitySharingScreen(
+fun EdlMdocSharingScreen(
     presentmentSource: PresentmentSource,
     presentmentModel: PresentmentModel,
     settingsModel: TestAppSettingsModel,
     promptModel: PromptModel,
     documentTypeRepository: DocumentTypeRepository,
     imageLoader: ImageLoader,
-    showToast: (message: String) -> Unit,
+    onBack: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope { promptModel }
-    val blePermissionState = rememberBluetoothPermissionState()
-    val bleEnabledState = rememberBluetoothEnabledState()
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!blePermissionState.isGranted) {
-            Button(
-                onClick = { coroutineScope.launch { blePermissionState.launchPermissionRequest() } }
-            ) {
-                Text("Request BLE permissions")
-            }
-        } else if (!bleEnabledState.isEnabled) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
+        // 顶部返回和标题
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            EdlBackButton(onClick = onBack)
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "分享电子驾照",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = DriverLicenseBlue
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        MdocProximityQrPresentment(
+            modifier = Modifier,
+            appName = "电子驾照",
+            appIconPainter = painterResource(platformAppIcon),
+            presentmentModel = presentmentModel,
+            presentmentSource = presentmentSource,
+            promptModel = promptModel,
+            documentTypeRepository = documentTypeRepository,
+            imageLoader = imageLoader,
+            allowMultipleRequests = settingsModel.presentmentAllowMultipleRequests.value,
+            showQrButton = { onQrButtonClicked ->
+                EdlButton(
+                    text = "展示二维码",
                     onClick = {
-                        coroutineScope.launch {
-                            bleEnabledState.enable()
-                        }
-                    }
-                ) {
-                    Text("Enable Bluetooth")
-                }
-            }
-        } else {
-            MdocProximityQrPresentment(
-                modifier = Modifier,
-                appName = platformAppName,
-                appIconPainter = painterResource(platformAppIcon),
-                presentmentModel = presentmentModel,
-                presentmentSource = presentmentSource,
-                promptModel = promptModel,
-                documentTypeRepository = documentTypeRepository,
-                imageLoader = imageLoader,
-                allowMultipleRequests = settingsModel.presentmentAllowMultipleRequests.value,
-                showQrButton = { onQrButtonClicked ->
-                    Button(onClick = {
                         val connectionMethods = mutableListOf<MdocConnectionMethod>()
                         val bleUuid = UUID.randomUUID()
                         if (settingsModel.presentmentBleCentralClientModeEnabled.value) {
@@ -133,29 +117,51 @@ fun IsoMdocProximitySharingScreen(
                                 )
                             )
                         )
-                    }) {
-                        Text("出示二维码")
-                    }
-                },
-                showQrCode = { uri ->
-                    val qrCodeBitmap = remember { generateQrCode(uri) }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            showQrCode = { uri ->
+                val qrCodeBitmap = remember { generateQrCode(uri) }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "请将二维码展示给验证方扫描",
+                        fontSize = 16.sp,
+                        color = DriverLicenseBlue,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
-                        Text(text = "请向阅读器出示二维码")
                         Image(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                             bitmap = qrCodeBitmap,
                             contentDescription = null,
                             contentScale = ContentScale.FillWidth
                         )
-                        Button(onClick = { presentmentModel.reset() }) {
-                            Text("取消")
-                        }
                     }
+                    
+                    EdlButton(
+                        text = "取消",
+                        onClick = { presentmentModel.reset() },
+                        modifier = Modifier.fillMaxWidth(),
+                        containerColor = DriverLicenseGray
+                    )
                 }
-            )
-        }
+            }
+        )
     }
 }

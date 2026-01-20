@@ -44,6 +44,21 @@ data object StartDestination : Destination {
     override val title = null
 }
 
+data object EdlStartDestination : Destination {
+    override val route = "edl_start"
+    override val title = null
+}
+
+data object EdlSharingDestination : Destination {
+    override val route = "edl_sharing"
+    override val title = null
+}
+
+data object EdlVerificationDestination : Destination {
+    override val route = "edl_verification"
+    override val title = null
+}
+
 data object SettingsDestination : Destination {
     override val route = "settings"
     override val title = Res.string.settings_screen_title
@@ -237,6 +252,9 @@ data object ScreenLockDestination : Destination {
 
 val appDestinations = listOf(
     StartDestination,
+    EdlStartDestination,
+    EdlSharingDestination,
+    EdlVerificationDestination,
     SettingsDestination,
     AboutDestination,
     DocumentStoreDestination,

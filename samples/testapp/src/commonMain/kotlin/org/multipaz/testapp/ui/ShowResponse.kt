@@ -139,7 +139,7 @@ fun ShowResponse(
     }
 
     if (verificationError.value != null) {
-        Text(text = verificationError.value!!.message ?: "Failed")
+        Text(text = verificationError.value!!.message ?: "验证失败")
     } else if (verficationResult.value != null) {
         for (section in verficationResult.value!!.sections) {
             val entries = mutableListOf<@Composable () -> Unit>()
@@ -183,7 +183,7 @@ fun ShowResponse(
                                 )
                             }
                             is ValueCertChain -> {
-                                Text(text = "Click to view")
+                                Text(text = "点击查看")
                             }
 
                             is ValueText -> {
@@ -247,27 +247,27 @@ private suspend fun parseResponse(
 
     if (metadata != null) {
         lines = mutableListOf()
-        lines.add(Line("Engagement Type", ValueText(metadata.engagementType)))
-        lines.add(Line("Transfer Protocol", ValueText(metadata.transferProtocol)))
-        lines.add(Line("Request size", ValueSize(metadata.requestSize)))
-        lines.add(Line("Response size", ValueSize(metadata.responseSize)))
-        lines.add(Line("Tap to engagement received", ValueDuration(
+        lines.add(Line("交互类型", ValueText(metadata.engagementType)))
+        lines.add(Line("传输协议", ValueText(metadata.transferProtocol)))
+        lines.add(Line("请求大小", ValueSize(metadata.requestSize)))
+        lines.add(Line("响应大小", ValueSize(metadata.responseSize)))
+        lines.add(Line("NFC接触到交互接收", ValueDuration(
             metadata.durationMsecNfcTapToEngagement?.toDuration(DurationUnit.MILLISECONDS)
         )))
-        lines.add(Line("Engagement received to request sent", ValueDuration(
+        lines.add(Line("交互接收到请求发送", ValueDuration(
             metadata.durationMsecEngagementReceivedToRequestSent?.toDuration(DurationUnit.MILLISECONDS)
         )))
-        lines.add(Line("Request sent to response received", ValueDuration(
+        lines.add(Line("请求发送到响应接收", ValueDuration(
             metadata.durationMsecRequestSentToResponseReceived.toDuration(DurationUnit.MILLISECONDS)
         )))
         var totalMsec = 0L
         metadata.durationMsecNfcTapToEngagement?.let { totalMsec += it }
         metadata.durationMsecEngagementReceivedToRequestSent?.let { totalMsec += it }
         totalMsec += metadata.durationMsecRequestSentToResponseReceived
-        lines.add(Line("Total duration", ValueDuration(totalMsec.toDuration(DurationUnit.MILLISECONDS))))
+        lines.add(Line("总耗时", ValueDuration(totalMsec.toDuration(DurationUnit.MILLISECONDS))))
         sections.add(
             Section(
-                header = "Transfer info",
+                header = "传输信息",
                 lines = lines
             )
         )
@@ -277,37 +277,37 @@ private suspend fun parseResponse(
         lines = mutableListOf()
         when (vp) {
             is MdocVerifiedPresentation -> {
-                lines.add(Line("Credential format", ValueText("ISO mdoc")))
-                lines.add(Line("DocType", ValueText(vp.docType)))
-                lines.add(Line("Issuer DS curve", ValueText(vp.documentSignerCertChain.certificates.first().ecPublicKey.curve.name)))
+                lines.add(Line("凭证格式", ValueText("ISO mdoc")))
+                lines.add(Line("文档类型", ValueText(vp.docType)))
+                lines.add(Line("颁发者DS曲线", ValueText(vp.documentSignerCertChain.certificates.first().ecPublicKey.curve.name)))
                 val trustResult =
                     issuerTrustManager.verify(vp.documentSignerCertChain.certificates, now)
                 if (trustResult.isTrusted) {
                     val tpName =
                         trustResult.trustPoints.first().metadata?.displayName?.let { " ($it)" } ?: ""
-                    lines.add(Line("Issuer Trusted", ValueText("Yes$tpName")))
+                    lines.add(Line("颁发者可信", ValueText("是$tpName")))
                 } else {
-                    lines.add(Line("Issuer Trusted", ValueText("No")))
+                    lines.add(Line("颁发者可信", ValueText("否")))
                 }
                 lines.add(
                     Line(
-                        "Issuer certificate chain",
+                        "颁发者证书链",
                         ValueCertChain(vp.documentSignerCertChain),
                         { onViewCertChain?.let { it(vp.documentSignerCertChain) } }
                     )
                 )
                 if (vp.zkpUsed) {
-                    lines.add(Line("ZK proof", ValueText("Successfully verified \uD83E\uDE84")))
+                    lines.add(Line("零知识证明", ValueText("验证成功 \uD83E\uDE84")))
                 }
-                lines.add(Line("Valid from", ValueDateTime(vp.validFrom)))
-                lines.add(Line("Valid until", ValueDateTime(vp.validUntil)))
-                lines.add(Line("Signed at", ValueDateTime(vp.signedAt)))
-                lines.add(Line("Expected update", ValueDateTime(vp.expectedUpdate)))
+                lines.add(Line("有效期开始", ValueDateTime(vp.validFrom)))
+                lines.add(Line("有效期结束", ValueDateTime(vp.validUntil)))
+                lines.add(Line("签名时间", ValueDateTime(vp.signedAt)))
+                lines.add(Line("预期更新", ValueDateTime(vp.expectedUpdate)))
 
                 for (n in listOf(0, 1)) {
                     val claims = if (n == 0) { vp.issuerSignedClaims } else { vp.deviceSignedClaims }
                     for ((namespace, claims) in claims.organizeByNamespace()) {
-                        val namespaceHeader = if (n == 0) { "Namespace" } else { "Namespace (device-signed)" }
+                        val namespaceHeader = if (n == 0) { "命名空间" } else { "命名空间 (设备签名)" }
                         lines.add(Line(namespaceHeader, ValueText(namespace)))
                         for (claim in claims) {
                             val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
@@ -323,37 +323,37 @@ private suspend fun parseResponse(
             }
 
             is JsonVerifiedPresentation -> {
-                lines.add(Line("Credential format", ValueText("IETF SD-JWT VC")))
-                lines.add(Line("Verifiable Credential Type", ValueText(vp.vct)))
-                lines.add(Line("Issuer DS curve", ValueText(vp.documentSignerCertChain.certificates.first().ecPublicKey.curve.name)))
+                lines.add(Line("凭证格式", ValueText("IETF SD-JWT VC")))
+                lines.add(Line("可验证凭证类型", ValueText(vp.vct)))
+                lines.add(Line("颁发者DS曲线", ValueText(vp.documentSignerCertChain.certificates.first().ecPublicKey.curve.name)))
                 val trustResult =
                     issuerTrustManager.verify(vp.documentSignerCertChain.certificates, now)
                 if (trustResult.isTrusted) {
                     val tpName =
                         trustResult.trustPoints.first().metadata?.displayName?.let { " ($it)" } ?: ""
-                    lines.add(Line("Issuer Trusted", ValueText("Yes$tpName")))
+                    lines.add(Line("颁发者可信", ValueText("是$tpName")))
                 } else {
-                    lines.add(Line("Issuer Trusted", ValueText("No")))
+                    lines.add(Line("颁发者可信", ValueText("否")))
                 }
                 lines.add(
                     Line(
-                        "Issuer certificate chain",
+                        "颁发者证书链",
                         ValueCertChain(vp.documentSignerCertChain),
                         { onViewCertChain?.let { it(vp.documentSignerCertChain) } }
                     )
                 )
                 if (vp.zkpUsed) {
-                    lines.add(Line("ZK proof", ValueText("Successfully verified \uD83E\uDE84")))
+                    lines.add(Line("零知识证明", ValueText("验证成功 \uD83E\uDE84")))
                 }
-                lines.add(Line("Valid from", ValueDateTime(vp.validFrom)))
-                lines.add(Line("Valid until", ValueDateTime(vp.validUntil)))
-                lines.add(Line("Signed at", ValueDateTime(vp.signedAt)))
-                lines.add(Line("Expected update", ValueDateTime(vp.expectedUpdate)))
+                lines.add(Line("有效期开始", ValueDateTime(vp.validFrom)))
+                lines.add(Line("有效期结束", ValueDateTime(vp.validUntil)))
+                lines.add(Line("签名时间", ValueDateTime(vp.signedAt)))
+                lines.add(Line("预期更新", ValueDateTime(vp.expectedUpdate)))
                 for (n in listOf(0, 1)) {
                     val (claims, trailer) = if (n == 0) {
                         Pair(vp.issuerSignedClaims, "")
                     } else {
-                        Pair(vp.deviceSignedClaims, " (Device Signed)")
+                        Pair(vp.deviceSignedClaims, " (设备签名)")
                     }
                     for (claim in claims) {
                         val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
@@ -369,7 +369,7 @@ private suspend fun parseResponse(
         }
         sections.add(
             Section(
-                header = "Document ${vpNum + 1} of ${verifiedPresentations.size}",
+                header = "文档 ${vpNum + 1} / ${verifiedPresentations.size}",
                 lines = lines
             )
         )

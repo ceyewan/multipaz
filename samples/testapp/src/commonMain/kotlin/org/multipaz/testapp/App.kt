@@ -66,6 +66,9 @@ import org.multipaz.storage.StorageTable
 import org.multipaz.storage.StorageTableSpec
 import org.multipaz.testapp.ui.AboutScreen
 import org.multipaz.testapp.ui.AndroidKeystoreSecureAreaScreen
+import org.multipaz.testapp.ui.edl.EdlStartScreen
+import org.multipaz.testapp.ui.edl.EdlSharingScreen
+import org.multipaz.testapp.ui.edl.EdlVerificationScreen
 import org.multipaz.testapp.ui.CertificateScreen
 import org.multipaz.testapp.ui.CertificateViewerExamplesScreen
 import org.multipaz.testapp.ui.ConsentPromptScreen
@@ -825,7 +828,7 @@ class App private constructor (val promptModel: PromptModel) {
 
         val currentDestination = appDestinations.find {
             it.route == routeWithoutArgs
-        } ?: StartDestination
+        } ?: EdlStartDestination
 
         LaunchedEffect(true) {
             while (true) {
@@ -863,12 +866,35 @@ class App private constructor (val promptModel: PromptModel) {
 
                 NavHost(
                     navController = navController,
-                    startDestination = StartDestination.route,
+                    startDestination = EdlStartDestination.route,
                     modifier = Modifier
                         .fillMaxSize()
                         //.verticalScroll(rememberScrollState())
                         .padding(innerPadding)
                 ) {
+                    composable(route = EdlStartDestination.route) {
+                        EdlStartScreen(
+                            onNavigateToDocumentManagement = { navController.navigate(DocumentStoreDestination.route) },
+                            onNavigateToSharing = { navController.navigate(EdlSharingDestination.route) },
+                            onNavigateToVerification = { navController.navigate(EdlVerificationDestination.route) },
+                            onNavigateToDeveloperMenu = { navController.navigate(StartDestination.route) }
+                        )
+                    }
+                    composable(route = EdlSharingDestination.route) {
+                        EdlSharingScreen(
+                            onNavigateToMultipazSharing = {
+                                presentmentModel.reset()
+                                navController.navigate(IsoMdocProximitySharingDestination.route)
+                            },
+                            onBack = { navController.navigateUp() }
+                        )
+                    }
+                    composable(route = EdlVerificationDestination.route) {
+                        EdlVerificationScreen(
+                            onNavigateToMultipazReading = { navController.navigate(IsoMdocProximityReadingDestination.route) },
+                            onBack = { navController.navigateUp() }
+                        )
+                    }
                     composable(route = StartDestination.route) {
                         StartScreen(
                             documentModel = documentModel,
@@ -1264,6 +1290,16 @@ fun AppBar(
     includeSettingsIcon: Boolean,
     modifier: Modifier = Modifier
 ) {
+    // Hide AppBar for EDL screens, ISO mdoc proximity sharing/reading, and show response
+    if (currentDestination == EdlStartDestination ||
+        currentDestination == EdlSharingDestination ||
+        currentDestination == EdlVerificationDestination ||
+        currentDestination == IsoMdocProximitySharingDestination ||
+        currentDestination == IsoMdocProximityReadingDestination ||
+        currentDestination == ShowResponseDestination) {
+        return
+    }
+    
     val title = currentDestination.title?.let { stringResource(it) } ?: platformAppName
     TopAppBar(
         title = { Text(text = title) },
