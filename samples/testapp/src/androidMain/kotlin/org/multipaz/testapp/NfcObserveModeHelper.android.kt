@@ -130,6 +130,9 @@ actual object NfcObserveModeHelper {
         }
 
         val adapter = NfcAdapter.getDefaultAdapter(applicationContext)
+        if (adapter == null) {
+            return
+        }
         val isObserveModeEnabledOnAdapter = adapter.isObserveModeEnabled
         val observeModeShouldBeEnabled = if (isEnabled) {
             if (observeModeExplicitlyInhibited) {
