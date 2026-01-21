@@ -273,50 +273,50 @@ private val displayNameTranslations =
 private val requestVerificationTypeLabels = mapOf(
     // ========== Driving License 请求 ==========
     "US Transportation" to "大小/等式/布尔/有效性",
-    "Age Over 18" to "布尔",
-    "Age Over 21" to "布尔",
-    "Age Over 18 (ZKP)" to "布尔",
-    "Age Over 21 (ZKP)" to "布尔",
-    "Age Over 18 + Portrait" to "布尔",
-    "Age Over 21 + Portrait" to "布尔",
+    "Age Over 18" to "大小",
+    "Age Over 21" to "大小",
+    "Age Over 18 (ZKP)" to "大小",
+    "Age Over 21 (ZKP)" to "大小",
+    "Age Over 18 + Portrait" to "大小/布尔",
+    "Age Over 21 + Portrait" to "大小/布尔",
     "Mandatory Data Elements" to "大小/等式/布尔/有效性",
     "All Data Elements" to "大小/等式/布尔/有效性",
     "Name and Address (Partially Stored)" to "等式",
     "Name and Address (All Stored)" to "等式",
 
     // ========== Age Verification 请求 ==========
-    "Age Over 18" to "布尔",
-    "Age Over 21" to "布尔",
-    "Age Over 18 (ZKP)" to "布尔",
-    "Age Over 21 (ZKP)" to "布尔",
+    "Age Over 18" to "大小",
+    "Age Over 21" to "大小",
+    "Age Over 18 (ZKP)" to "大小",
+    "Age Over 21 (ZKP)" to "大小",
     "All Data Elements" to "布尔",
 
     // ========== EUPersonalID / GermanPersonalID 请求 ==========
-    "Age Over 18" to "布尔",
-    "Age Over 18 (ZKP)" to "布尔",
-    "Age Over 18 + Portrait" to "布尔",
+    "Age Over 18" to "大小",
+    "Age Over 18 (ZKP)" to "大小",
+    "Age Over 18 + Portrait" to "大小/布尔",
     "Mandatory Data Elements" to "等式/有效性",
     "All Data Elements" to "大小/等式/布尔/有效性",
 
     // ========== IDPass 请求 ==========
-    "Age Over 18" to "布尔",
-    "Age Over 21" to "布尔",
-    "Age Over 18 (ZKP)" to "布尔",
-    "Age Over 21 (ZKP)" to "布尔",
-    "Age Over 18 + Portrait" to "布尔",
-    "Age Over 21 + Portrait" to "布尔",
+    "Age Over 18" to "大小",
+    "Age Over 21" to "大小",
+    "Age Over 18 (ZKP)" to "大小",
+    "Age Over 21 (ZKP)" to "大小",
+    "Age Over 18 + Portrait" to "大小/布尔",
+    "Age Over 21 + Portrait" to "大小/布尔",
     "Mandatory Data Elements" to "等式/有效性",
     "All Data Elements" to "大小/等式/布尔/有效性",
 
     // ========== PhotoID 请求 ==========
-    "Age Over 18" to "布尔",
-    "Age Over 18 (ZKP)" to "布尔",
-    "Age Over 18 + Portrait" to "布尔",
+    "Age Over 18" to "大小",
+    "Age Over 18 (ZKP)" to "大小",
+    "Age Over 18 + Portrait" to "大小/布尔",
     "Mandatory Data Elements" to "等式",
     "All Data Elements" to "大小/等式/布尔",
 
     // ========== EUCertificateOfResidence 请求 ==========
-    "Age Over 18" to "布尔",
+    "Age Over 18" to "大小",
     "Mandatory Data Elements" to "等式/有效性",
     "All Data Elements" to "大小/等式/布尔/有效性",
 

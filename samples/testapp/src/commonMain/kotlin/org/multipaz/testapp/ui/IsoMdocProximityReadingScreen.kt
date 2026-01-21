@@ -123,8 +123,18 @@ fun IsoMdocProximityReadingScreen(
     val requestOptions = mutableListOf<RequestPickerEntry>()
     for (documentType in TestAppUtils.provisionedDocumentTypes) {
         for (sampleRequest in documentType.cannedRequests) {
+            val localizedDocName = localizeDisplayName(documentType.displayName)
+            val localizedRequestName = localizeDisplayName(sampleRequest.displayName)
+            val verificationLabel = getRequestVerificationTypeLabel(sampleRequest.displayName)
+
+            val displayName = if (verificationLabel.isNotEmpty()) {
+                "$localizedDocName: $localizedRequestName（$verificationLabel）"
+            } else {
+                "$localizedDocName: $localizedRequestName"
+            }
+
             requestOptions.add(RequestPickerEntry(
-                displayName = "${localizeDisplayName(documentType.displayName)}: ${localizeDisplayName(sampleRequest.displayName)}",
+                displayName = displayName,
                 documentType = documentType,
                 sampleRequest = sampleRequest
             ))
