@@ -51,7 +51,7 @@ object UtopiaNaturalization {
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "全部数据项",
+                displayName = "All Data Elements",
                 jsonClaims = listOf()
             )
             .build()

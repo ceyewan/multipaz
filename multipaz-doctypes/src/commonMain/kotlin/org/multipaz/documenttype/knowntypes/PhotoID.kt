@@ -141,7 +141,7 @@ object PhotoID {
             addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
                 identifier = "age_over_${if (age < 10) "0$age" else "$age"}",
-                displayName = "年满 ${age} 周岁",
+                displayName = "Older Than $age Years",
                 description = "Indication whether the document holder is as old or older than $age",
                 mandatory = (age == 18),
                 mdocNamespace = ISO_23220_2_NAMESPACE,
@@ -588,7 +588,7 @@ object PhotoID {
         //
         addSampleRequest(
             id = "age_over_18",
-            displayName = "年满18周岁",
+            displayName = "Age Over 18",
             mdocDataElements = mapOf(
                 ISO_23220_2_NAMESPACE to mapOf(
                     "age_over_18" to false,
@@ -597,7 +597,7 @@ object PhotoID {
         )
         addSampleRequest(
             id = "age_over_18_zkp",
-            displayName = "年满18周岁 (ZKP)",
+            displayName = "Age Over 18 (ZKP)",
             mdocDataElements = mapOf(
                 ISO_23220_2_NAMESPACE to mapOf(
                     "age_over_18" to false,
@@ -607,7 +607,7 @@ object PhotoID {
         )
         addSampleRequest(
             id = "age_over_18_and_portrait",
-            displayName = "年满18周岁和人像",
+            displayName = "Age Over 18 + Portrait",
             mdocDataElements = mapOf(
                 ISO_23220_2_NAMESPACE to mapOf(
                     "age_over_18" to false,
@@ -617,7 +617,7 @@ object PhotoID {
         )
         addSampleRequest(
             id = "mandatory",
-            displayName = "必备数据项",
+            displayName = "Mandatory Data Elements",
             mdocDataElements = mapOf(
                 ISO_23220_2_NAMESPACE to mapOf(
                     "family_name" to false,
@@ -634,7 +634,7 @@ object PhotoID {
         )
         addSampleRequest(
             id = "full",
-            displayName = "全部数据项",
+            displayName = "All Data Elements",
             mdocDataElements = mapOf(
                 ISO_23220_2_NAMESPACE to mapOf(),
                 PHOTO_ID_NAMESPACE to mapOf(),

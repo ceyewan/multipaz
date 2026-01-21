@@ -791,7 +791,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "us-transportation",
-                displayName = "交通信息",
+                displayName = "US Transportation",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "sex" to false,
@@ -811,7 +811,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName ="年满18周岁",
+                displayName ="Age Over 18",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -820,7 +820,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21",
-                displayName ="年满21周岁",
+                displayName ="Age Over 21",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -829,7 +829,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName ="年满18周岁 (ZKP)",
+                displayName ="Age Over 18 (ZKP)",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -839,7 +839,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21_zkp",
-                displayName ="年满21周岁 (ZKP)",
+                displayName ="Age Over 21 (ZKP)",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -849,7 +849,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18_and_portrait",
-                displayName ="年满18周岁 + 人像",
+                displayName ="Age Over 18 + Portrait",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -859,7 +859,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21_and_portrait",
-                displayName ="年满21周岁 + 人像",
+                displayName ="Age Over 21 + Portrait",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -869,7 +869,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "必备数据项",
+                displayName = "Mandatory Data Elements",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to false,
@@ -888,7 +888,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "full",
-                displayName ="全部数据项",
+                displayName ="All Data Elements",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(),
                     AAMVA_NAMESPACE to mapOf()
@@ -896,7 +896,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "name-and-address-partially-stored",
-                displayName = "姓名与地址（部分存储）",
+                displayName = "Name and Address (Partially Stored)",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to true,
@@ -916,7 +916,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "name-and-address-all-stored",
-                displayName = "姓名与地址（全部存储）",
+                displayName = "Name and Address (All Stored)",
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to true,

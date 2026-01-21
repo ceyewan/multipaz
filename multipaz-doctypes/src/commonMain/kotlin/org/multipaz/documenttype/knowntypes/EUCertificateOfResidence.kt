@@ -262,7 +262,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName = "年满18周岁",
+                displayName = "Age Over 18",
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -272,7 +272,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "必备数据项",
+                displayName = "Mandatory Data Elements",
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf(
                         "family_name" to false,
@@ -298,7 +298,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "全部数据项",
+                displayName = "All Data Elements",
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf()
                 ),

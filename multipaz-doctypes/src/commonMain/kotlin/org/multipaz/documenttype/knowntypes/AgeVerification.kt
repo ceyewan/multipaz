@@ -28,7 +28,7 @@ object AgeVerification {
                 addMdocAttribute(
                     type = DocumentAttributeType.Boolean,
                     identifier = "age_over_${if (age < 10) "0$age" else "$age"}",
-                    displayName = "年满${age}周岁",
+                    displayName = "Older Than $age Years",
                     description = "Indication whether the document holder is as old or older than $age",
                     mandatory = (age == 18),
                     mdocNamespace = AV_NAMESPACE,
@@ -44,7 +44,7 @@ object AgeVerification {
             // Sample requests.
             addSampleRequest(
                 id = "age_over_18",
-                displayName = "年满18周岁",
+                displayName = "Age Over 18",
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -53,7 +53,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName = "年满18周岁 (ZKP)",
+                displayName = "Age Over 18 (ZKP)",
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -63,7 +63,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_21",
-                displayName = "年满21周岁",
+                displayName = "Age Over 21",
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -72,7 +72,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_21_zkp",
-                displayName = "年满21周岁 (ZKP)",
+                displayName = "Age Over 21 (ZKP)",
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -82,7 +82,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "full",
-                displayName = "全部数据项",
+                displayName = "All Data Elements",
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf()
                 )

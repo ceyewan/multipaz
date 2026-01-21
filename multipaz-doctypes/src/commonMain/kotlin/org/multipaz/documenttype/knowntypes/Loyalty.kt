@@ -96,7 +96,7 @@ object Loyalty {
             //
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "必备数据项",
+                displayName = "Mandatory Data Elements",
                 mdocDataElements = mapOf(
                     LOYALTY_NAMESPACE to mapOf(
                             "family_name" to false,
@@ -111,7 +111,7 @@ object Loyalty {
             )
             .addSampleRequest(
                 id = "full",
-                displayName ="全部数据项",
+                displayName ="All Data Elements",
                 mdocDataElements = mapOf(
                     LOYALTY_NAMESPACE to mapOf()
                 )
