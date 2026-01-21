@@ -459,7 +459,7 @@ fun IsoMdocProximityReadingScreen(
             ) {
                 item {
                     ComboBox(
-                        headline = "DocType and data elements to request",
+                        headline = "请求的文档类型及数据项",
                         availableRequests = requestOptions,
                         comboBoxSelected = requestSelected,
                         comboBoxExpanded = requestDropdownExpanded,

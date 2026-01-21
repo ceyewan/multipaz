@@ -28,7 +28,7 @@ object AgeVerification {
                 addMdocAttribute(
                     type = DocumentAttributeType.Boolean,
                     identifier = "age_over_${if (age < 10) "0$age" else "$age"}",
-                    displayName = "年满$age周岁",
+                    displayName = "年满${age}周岁",
                     description = "Indication whether the document holder is as old or older than $age",
                     mandatory = (age == 18),
                     mdocNamespace = AV_NAMESPACE,
