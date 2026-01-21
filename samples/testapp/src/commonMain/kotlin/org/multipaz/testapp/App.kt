@@ -857,7 +857,7 @@ class App private constructor (val promptModel: PromptModel) {
                         canNavigateBack = navController.previousBackStackEntry != null,
                         navigateUp = { navController.navigateUp() },
                         navigateToSettings = { navController.navigate(SettingsDestination.route) },
-                        includeSettingsIcon = (currentDestination != SettingsDestination)
+                        includeSettingsIcon = (currentDestination != SettingsDestination && currentDestination != DocumentStoreDestination)
                     )
                 },
                 snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -877,8 +877,7 @@ class App private constructor (val promptModel: PromptModel) {
                         EdlStartScreen(
                             onNavigateToDocumentManagement = { navController.navigate(DocumentStoreDestination.route) },
                             onNavigateToSharing = { navController.navigate(EdlSharingDestination.route) },
-                            onNavigateToVerification = { navController.navigate(EdlVerificationDestination.route) },
-                            onNavigateToDeveloperMenu = { navController.navigate(StartDestination.route) }
+                            onNavigateToVerification = { navController.navigate(EdlVerificationDestination.route) }
                         )
                     }
                     composable(route = EdlSharingDestination.route) {

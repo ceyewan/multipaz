@@ -1,6 +1,5 @@
 package org.multipaz.testapp.ui.edl
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,20 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
  * EDL 风格首页
- * 包含三个核心功能按钮，以及底部的开发者入口
+ * 包含三个核心功能按钮
  */
 @Composable
 fun EdlStartScreen(
     onNavigateToDocumentManagement: () -> Unit,
     onNavigateToSharing: () -> Unit,
-    onNavigateToVerification: () -> Unit,
-    onNavigateToDeveloperMenu: () -> Unit
+    onNavigateToVerification: () -> Unit
 ) {
     EdlTheme {
         Surface(
@@ -92,17 +89,6 @@ fun EdlStartScreen(
                 )
                 
                 Spacer(modifier = Modifier.weight(1f))
-                
-                // 开发者选项入口
-                Text(
-                    text = "开发者选项 / Developer Options",
-                    fontSize = 14.sp,
-                    color = TextSecondary,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .clickable(onClick = onNavigateToDeveloperMenu)
-                )
             }
         }
     }

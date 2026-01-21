@@ -140,65 +140,6 @@ fun DocumentStoreScreen(
         )
     }
 
-    val showCsaConnectDialog = remember { mutableStateOf(false) }
-    val documentCreationMode = remember { mutableStateOf<DocumentCreationMode>(DocumentCreationMode.NORMAL) }
-    if (showCsaConnectDialog.value) {
-        CsaConnectDialog(
-            settingsModel.cloudSecureAreaUrl.value,
-            onDismissRequest = {
-                showCsaConnectDialog.value = false
-            },
-            onConnectButtonClicked = { url: String, walletPin: String, constraints: PassphraseConstraints ->
-                showCsaConnectDialog.value = false
-                settingsModel.cloudSecureAreaUrl.value = url
-                coroutineScope.launch {
-                    val cloudSecureArea = CloudSecureArea.create(
-                        Platform.nonBackedUpStorage,
-                        "CloudSecureArea?url=${url.encodeURLParameter()}",
-                        url,
-                        platformHttpClientEngineFactory()
-                    )
-                    try {
-                        cloudSecureArea.register(
-                            walletPin,
-                            constraints
-                        ) { true }
-                        showToast("Registered with CSA")
-                        val dsKey = generateDsKeyAndCert(documentSigningAlgorithm.value, iacaKey)
-                        provisionTestDocuments(
-                            documentCreationMode = documentCreationMode.value,
-                            showProvisioningResult = showProvisioningResult,
-                            documentStore = documentStore,
-                            secureArea = cloudSecureArea,
-                            secureAreaCreateKeySettingsFunc = { challenge, algorithm, userAuthenticationRequired,
-                                                                validFrom, validUntil ->
-                                CloudCreateKeySettings.Builder(challenge)
-                                    .setAlgorithm(algorithm)
-                                    .setPassphraseRequired(true)
-                                    .setUserAuthenticationRequired(
-                                        userAuthenticationRequired,
-                                        setOf(CloudUserAuthType.PASSCODE, CloudUserAuthType.BIOMETRIC)
-                                    )
-                                    .setValidityPeriod(validFrom, validUntil)
-                                    .build()
-                            },
-                            dsKey = dsKey,
-                            showToast = showToast,
-                            deviceKeyAlgorithm = deviceKeyAlgorithm.value,
-                            deviceKeyMacAlgorithm = deviceKeyMacAlgorithm.value,
-                            numCredentialsPerDomain = numCredentialsPerDomain.value,
-                            showDocumentCreationDialog = showDocumentCreationDialog,
-                        )
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
-                        showToast("${e.message}")
-                    }
-                }
-            }
-        )
-    }
-
-
     LazyColumn(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -277,62 +218,6 @@ fun DocumentStoreScreen(
                 }
             }) {
                 Text(text = "在软件安全区创建测试文档")
-            }
-        }
-        item {
-            TextButton(onClick = {
-                documentCreationMode.value = DocumentCreationMode.NORMAL
-                showCsaConnectDialog.value = true
-            }) {
-                Text(text = "在云安全区创建测试文档")
-            }
-        }
-        item {
-            TextButton(onClick = {
-                documentCreationMode.value = DocumentCreationMode.EUPID_WITH_10_CREDENTIALS
-                showCsaConnectDialog.value = true
-            }) {
-                Text(text = "在云安全区创建含 10 个凭证的 EUPID")
-            }
-        }
-        item {
-            TextButton(onClick = {
-                documentCreationMode.value = DocumentCreationMode.EUPID_WITH_10_CREDENTIALS_BATCH
-                showCsaConnectDialog.value = true
-            }) {
-                Text(text = "在云安全区批量创建含 10 个凭证的 EUPID")
-            }
-        }
-        item {
-            TextButton(onClick = {
-                coroutineScope.launch {
-                    val dsKey = generateDsKeyAndCert(documentSigningAlgorithm.value, iacaKey)
-                    provisionTestDocuments(
-                        documentCreationMode = DocumentCreationMode.DCQL_TEST_DOCUMENTS,
-                        showProvisioningResult = showProvisioningResult,
-                        documentStore = documentStore,
-                        secureArea = Platform.getSecureArea(),
-                        secureAreaCreateKeySettingsFunc = { challenge, algorithm, userAuthenticationRequired,
-                                                            validFrom, validUntil ->
-                            CreateKeySettings(
-                                algorithm = algorithm,
-                                nonce = challenge,
-                                userAuthenticationRequired = userAuthenticationRequired,
-                                userAuthenticationTimeout = userAuthenticationTimeout.value,
-                                validFrom = validFrom,
-                                validUntil = validUntil
-                            )
-                        },
-                        dsKey = dsKey,
-                        showToast = showToast,
-                        deviceKeyAlgorithm = deviceKeyAlgorithm.value,
-                        deviceKeyMacAlgorithm = deviceKeyMacAlgorithm.value,
-                        numCredentialsPerDomain = numCredentialsPerDomain.value,
-                        showDocumentCreationDialog = showDocumentCreationDialog,
-                    )
-                }
-            }) {
-                Text(text = "创建用于 DCQL 测试的测试文档")
             }
         }
         item {
