@@ -22,7 +22,7 @@ class OpenID4VCILocalBackend: OpenID4VCIBackend {
             attestationIssuer = attestationKey.subject,
             attestedKey = keyAttestation.publicKey,
             nonce = null,
-            walletName = "Multipaz TestApp",
+            walletName = "选择性披露测试",
             walletLink = "https://apps.multipaz.org"
         )
 

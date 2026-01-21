@@ -264,12 +264,12 @@ object GermanPersonalID {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName = "Age Over 18",
+                displayName = "年满18周岁",
                 jsonClaims = listOf("18")
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory Data Elements",
+                displayName = "必备数据项",
                 jsonClaims = listOf(
                     "family_name",
                     "given_name",
@@ -283,7 +283,7 @@ object GermanPersonalID {
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "All Data Elements",
+                displayName = "全部数据项",
                 jsonClaims = listOf()
             )
             .build()

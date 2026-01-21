@@ -101,9 +101,9 @@ fun DocumentStoreScreen(
         // TODO: would be nice to show a live-updated string "Creating credential 42 of 80"
         AlertDialog(
             onDismissRequest = {},
-            title = { Text(text = "Creating Documents") },
-            text = { Text(text = "Creating documents and credentials may take a while. " +
-            "This dialog will disappear when the process is complete.") },
+            title = { Text(text = "创建身份文件") },
+            text = { Text(text = "创建身份文件和凭证可能需要一些时间。" +
+            "过程完成后，此对话框将消失。") },
             confirmButton = {
                 Button(
                     onClick = {}) {
@@ -117,7 +117,7 @@ fun DocumentStoreScreen(
         val scrollState = rememberScrollState()
         AlertDialog(
             onDismissRequest = {},
-            title = { Text(text = "Provisioning Result") },
+            title = { Text(text = "配置结果") },
             text = {
                 Column(
                     modifier = Modifier
@@ -134,7 +134,7 @@ fun DocumentStoreScreen(
             confirmButton = {
                 Button(
                     onClick = { showProvisioningResult.value = null }) {
-                    Text("Close")
+                    Text("关闭")
                 }
             }
         )
@@ -211,7 +211,7 @@ fun DocumentStoreScreen(
                     }
                 }
             }) {
-                Text(text = "Delete all Documents")
+                Text(text = "删除所有身份文件")
             }
         }
         item {
@@ -248,7 +248,7 @@ fun DocumentStoreScreen(
                     )
                 }
             }) {
-                Text(text = "Create Test Documents in Platform Secure Area")
+                Text(text = "在平台安全区创建测试文档")
             }
         }
         item {
@@ -276,7 +276,7 @@ fun DocumentStoreScreen(
                     )
                 }
             }) {
-                Text(text = "Create Test Documents in Software Secure Area")
+                Text(text = "在软件安全区创建测试文档")
             }
         }
         item {
@@ -284,7 +284,7 @@ fun DocumentStoreScreen(
                 documentCreationMode.value = DocumentCreationMode.NORMAL
                 showCsaConnectDialog.value = true
             }) {
-                Text(text = "Create Test Documents in Cloud Secure Area")
+                Text(text = "在云安全区创建测试文档")
             }
         }
         item {
@@ -292,7 +292,7 @@ fun DocumentStoreScreen(
                 documentCreationMode.value = DocumentCreationMode.EUPID_WITH_10_CREDENTIALS
                 showCsaConnectDialog.value = true
             }) {
-                Text(text = "Create EUPID in CSA w/ 10 creds")
+                Text(text = "在云安全区创建含 10 个凭证的 EUPID")
             }
         }
         item {
@@ -300,7 +300,7 @@ fun DocumentStoreScreen(
                 documentCreationMode.value = DocumentCreationMode.EUPID_WITH_10_CREDENTIALS_BATCH
                 showCsaConnectDialog.value = true
             }) {
-                Text(text = "Create EUPID in CSA w/ 10 creds (batch)")
+                Text(text = "在云安全区批量创建含 10 个凭证的 EUPID")
             }
         }
         item {
@@ -332,15 +332,15 @@ fun DocumentStoreScreen(
                     )
                 }
             }) {
-                Text(text = "Create Test Documents for DCQL testing")
+                Text(text = "创建用于 DCQL 测试的测试文档")
             }
         }
         item {
-            SettingHeadline("Settings for new documents")
+            SettingHeadline("设置新文档")
         }
         item {
             SettingMultipleChoice(
-                title ="Credentials per Domain",
+                title ="每域凭证数量",
                 choices = listOf(1, 2, 3, 5, 10, 15, 20).map { it.toString() },
                 initialChoice = numCredentialsPerDomain.value.toString(),
                 onChoiceSelected = { choice ->
@@ -350,7 +350,7 @@ fun DocumentStoreScreen(
         }
         item {
             SettingMultipleChoice(
-                title = "DeviceKey Algorithm",
+                title = "设备密钥算法",
                 choices = Algorithm.entries.mapNotNull { if (it.isSigning) it.name else null },
                 initialChoice = deviceKeyAlgorithm.value.toString(),
                 onChoiceSelected = { choice ->
@@ -361,7 +361,7 @@ fun DocumentStoreScreen(
         }
         item {
             SettingMultipleChoice(
-                title = "DeviceKey MAC Algorithm",
+                title = "设备密钥 MAC 算法",
                 choices = listOf(Algorithm.UNSET.name) +
                         Algorithm.entries.mapNotNull { if (it.isKeyAgreement) it.name else null },
                 initialChoice = deviceKeyMacAlgorithm.value.toString(),
@@ -373,7 +373,7 @@ fun DocumentStoreScreen(
         }
         item {
             SettingMultipleChoice(
-                title = "Document Signing Algorithm",
+                title = "文档签名算法",
                 choices = Algorithm.entries.mapNotNull { if (it.fullySpecified && it.isSigning) it.name else null },
                 initialChoice = documentSigningAlgorithm.value.toString(),
                 onChoiceSelected = { choice ->
@@ -383,7 +383,7 @@ fun DocumentStoreScreen(
         }
         item {
             SettingMultipleChoice(
-                title = "User Auth Timeout",
+                title = "用户认证超时时间",
                 choices = userAuthenticationTimeoutValues.keys.toList(),
                 initialChoice = userAuthenticationTimeoutValues.keys.toList()[1],
                 onChoiceSelected = { choice ->
@@ -392,13 +392,13 @@ fun DocumentStoreScreen(
             )
         }
         item {
-            SettingHeadline("Current Documents in DocumentStore")
+            SettingHeadline("当前存储的身份文件")
         }
         if (documentModel.documentInfos.isEmpty()) {
             item {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    text = "DocumentStore is empty",
+                    text = "身份文件存储为空",
                     color = MaterialTheme.colorScheme.error
                 )
             }
@@ -511,7 +511,7 @@ private suspend fun provisionTestDocuments(
         val numDocsEnd = documentStore.listDocuments().size
 
         val provisioningResult = buildAnnotatedString {
-            append("Created ${numDocsEnd - numDocsBegin} document(s) in ${timestampEnd - timestampBegin}.")
+            append("创建 ${numDocsEnd - numDocsBegin} 个身份文件，耗时 ${timestampEnd - timestampBegin}.")
             if (openid4vciAttestationCompactSerialization != null) {
                 val prettyAttestation = Json {
                     prettyPrint = true

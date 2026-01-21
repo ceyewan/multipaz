@@ -227,8 +227,8 @@ fun ConsentPromptScreen(
         val dsKey = AsymmetricKey.X509CertifiedExplicit(X509CertChain(listOf(dsCert)), dsPrivateKey)
         DrivingLicense.getDocumentType().createMdocCredentialWithSampleData(
             document = documentStore!!.createDocument(
-                displayName = "Erika's Driving License",
-                typeDisplayName = "Utopia Driving License",
+                displayName = "Erika的电子驾照",
+                typeDisplayName = "Utopia 电子驾照",
                 cardArt = ByteString(cardArt)
             ),
             secureArea = secureArea,

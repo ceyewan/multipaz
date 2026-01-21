@@ -48,7 +48,7 @@ object UtopiaMovieTicket {
             .addJsonAttribute(
                 type = DocumentAttributeType.DateTime,
                 identifier = "show_date_time",
-                displayName = "Date and time of the show",
+                displayName = "演出的日期和时间",
                 description = "Date and time when the movie starts",
                 icon = Icon.TODAY,
                 sampleValue = JsonPrimitive(SampleData.MOVIE_DATE_TIME)
@@ -103,19 +103,19 @@ object UtopiaMovieTicket {
             )
             .addSampleRequest(
                 id = "is_parking_prepaid",
-                displayName = "Prepaid Parking",
+                displayName = "预付停车",
                 jsonClaims = listOf("parking_option")
             )
             .addSampleRequest(
                 id = "ticket_id",
-                displayName = "Ticket Number",
+                displayName = "车票号码",
                 jsonClaims = listOf(
                     "ticket_id",
                 )
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "All Data Elements",
+                displayName = "全部数据项",
                 jsonClaims = listOf()
             )
             .build()

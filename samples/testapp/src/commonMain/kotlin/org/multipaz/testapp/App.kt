@@ -499,7 +499,7 @@ class App private constructor (val promptModel: PromptModel) {
             ?: run {
                 val bundledReaderRootCert = MdocUtil.generateReaderRootCertificate(
                     readerRootKey = AsymmetricKey.anonymous(bundledReaderRootKey),
-                    subject = X500Name.fromName("CN=OWF Multipaz TestApp Reader Root"),
+                    subject = X500Name.fromName("CN=OWF 选择性披露测试 Reader Root"),
                     serial = ASN1Integer.fromRandom(numBits = 128),
                     validFrom = certsValidFrom,
                     validUntil = certsValidUntil,
@@ -528,7 +528,7 @@ class App private constructor (val promptModel: PromptModel) {
                 val cert = MdocUtil.generateReaderCertificate(
                     readerRootKey = readerRootKey,
                     readerKey = readerPrivateKey.publicKey,
-                    subject = X500Name.fromName("CN=OWF Multipaz TestApp Reader Cert"),
+                    subject = X500Name.fromName("CN=OWF 选择性披露测试 Reader Cert"),
                     serial = ASN1Integer.fromRandom(numBits = 128),
                     validFrom = certsValidFrom,
                     validUntil = certsValidUntil,
@@ -551,7 +551,7 @@ class App private constructor (val promptModel: PromptModel) {
         )
         builtInIssuerTrustManager.addX509Cert(
             certificate = iacaKey.certChain.certificates.first(),
-            metadata = TrustMetadata(displayName = "OWF Multipaz TestApp Issuer"),
+            metadata = TrustMetadata(displayName = "OWF 选择性披露测试 Issuer"),
         )
         val signedVical = SignedVical.parse(Res.readBytes("files/20250225 RDW Test Vical.vical"))
         // TODO: validate the Vical is signed by someone we trust, probably force this
@@ -595,7 +595,7 @@ class App private constructor (val promptModel: PromptModel) {
                 builtInReaderTrustManager.addX509Cert(
                     certificate = readerRootKey.certChain.certificates.first(),
                     metadata = TrustMetadata(
-                        displayName = "Multipaz TestApp",
+                        displayName = "选择性披露测试",
                         displayIcon = ByteString(Res.readBytes("files/utopia-brewery.png")),
                         privacyPolicyUrl = "https://apps.multipaz.org"
                     )

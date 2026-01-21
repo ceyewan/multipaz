@@ -296,7 +296,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     DrivingLicense.getDocumentType(),
                     "Erika",
-                    "Erika's Driving License",
+                    "Erika的电子驾照",
                     Res.drawable.driving_license_card_art
                 )
                 provisionDocument(
@@ -309,7 +309,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     PhotoID.getDocumentType(),
                     "Erika",
-                    "Erika's Photo ID",
+                    "Erika 的人像身份证明",
                     Res.drawable.photo_id_card_art
                 )
                 provisionDocument(
@@ -322,7 +322,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     PhotoID.getDocumentType(),
                     "Erika #2",
-                    "Erika's Photo ID #2",
+                    "Erika 的人像身份证明 #2",
                     Res.drawable.photo_id_card_art
                 )
                 provisionDocument(
@@ -335,7 +335,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     EUPersonalID.getDocumentType(),
                     "Erika",
-                    "Erika's EU PID",
+                    "Erika 的欧盟个人识别码",
                     Res.drawable.pid_card_art
                 )
                 provisionDocument(
@@ -348,7 +348,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     UtopiaMovieTicket.getDocumentType(),
                     "Erika",
-                    "The Last Utopian",
+                    "理想身份凭据",
                     Res.drawable.movie_ticket_cart_art
                 )
                 provisionDocument(
@@ -361,7 +361,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     UtopiaMovieTicket.getDocumentType(),
                     "Erika",
-                    "One flew over the Utopian Nest",
+                    "理想身份凭据出示",
                     Res.drawable.movie_ticket_cart_art
                 )
                 provisionDocument(
@@ -374,7 +374,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     UtopiaMovieTicket.getDocumentType(),
                     "Erika",
-                    "Utopia! Utopia! Utopia!",
+                    "理想身份凭据验证!",
                     Res.drawable.movie_ticket_cart_art
                 )
                 provisionDocument(
@@ -387,7 +387,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     AgeVerification.getDocumentType(),
                     "Erika",
-                    "Erika's Age Verification Credential",
+                    "Erika 的年龄验证凭证",
                     Res.drawable.av18_card_art
                 )
                 provisionDocument(
@@ -400,7 +400,7 @@ object TestAppUtils {
                     numCredentialsPerDomain,
                     Loyalty.getDocumentType(),
                     "Erika",
-                    "Erika's Loyalty ID",
+                    "Erika 的会员身份凭证",
                     Res.drawable.card_utopia_wholesale
                 )
                 return null

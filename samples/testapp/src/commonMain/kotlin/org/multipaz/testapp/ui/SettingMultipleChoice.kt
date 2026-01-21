@@ -44,7 +44,7 @@ fun SettingMultipleChoice(
                 onClick = { expanded.value = !expanded.value },
                 enabled = enabled
             ) {
-                Text("Change")
+                Text("变更")
             }
             DropdownMenu(
                 expanded = expanded.value,
