@@ -37,7 +37,7 @@ fun DocumentViewerScreen(
 
     Column(Modifier.padding(8.dp)) {
         if (documentInfo == null) {
-            Text("No document for identifier ${documentId}")
+            Text("未找到标识符为${documentId}的身份文档")
         } else {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -56,7 +56,7 @@ fun DocumentViewerScreen(
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = documentInfo.document.metadata.typeDisplayName ?: "(typeDisplayName not set)",
+                    text = documentInfo.document.metadata.typeDisplayName ?: "(未设置类型显示名称)",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -71,19 +71,19 @@ fun DocumentViewerScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 KeyValuePairText(
-                    keyText = "Provisioned",
-                    valueText = if (documentInfo.document.metadata.provisioned) "Yes" else "No"
+                    keyText = "已配置",
+                    valueText = if (documentInfo.document.metadata.provisioned) "是" else "否"
                 )
                 KeyValuePairText(
-                    keyText = "Document Type",
-                    valueText = documentInfo.document.metadata.typeDisplayName ?: "(typeDisplayName not set)"
+                    keyText = "身份文件类型",
+                    valueText = documentInfo.document.metadata.typeDisplayName ?: "(未设置类型显示名称)"
                 )
                 KeyValuePairText(
-                    keyText = "Document Name",
-                    valueText = documentInfo.document.metadata.displayName ?: "(displayName not set)"
+                    keyText = "身份文件名称",
+                    valueText = documentInfo.document.metadata.displayName ?: "(未设置显示名称)"
                 )
                 Text(
-                    text = "Credentials",
+                    text = "凭据",
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -94,7 +94,7 @@ fun DocumentViewerScreen(
                 for (domain in domains.sorted()) {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
-                        text = "$domain domain",
+                        text = "$domain 域",
                         style = MaterialTheme.typography.bodyMedium,
                         fontStyle = FontStyle.Italic
                     )
@@ -114,7 +114,7 @@ fun DocumentViewerScreen(
                             keyText = credentialInfo.credential.credentialType,
                             valueText = buildAnnotatedString {
                                 withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                                    append("Usage count ${credentialInfo.credential.usageCount}. Click for details")
+                                    append("使用次数：${credentialInfo.credential.usageCount}，点击查看详情")
                                 }
                             }
                         )

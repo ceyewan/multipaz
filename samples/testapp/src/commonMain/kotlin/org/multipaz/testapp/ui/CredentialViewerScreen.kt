@@ -50,28 +50,28 @@ fun CredentialViewerScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         if (credentialInfo == null) {
-            Text("No credential for documentId ${documentId} credentialId ${credentialId}")
+            Text("未找到对应凭证：身份文件ID：$documentId，凭据ID：$credentialId")
         } else {
-            KeyValuePairText("Class", credentialInfo.credential::class.simpleName.toString())
-            KeyValuePairText("Identifier", credentialInfo.credential.identifier)
-            KeyValuePairText("Domain", credentialInfo.credential.domain)
-            KeyValuePairText("Valid From", formattedDateTime(credentialInfo.credential.validFrom))
-            KeyValuePairText("Valid Until", formattedDateTime(credentialInfo.credential.validUntil))
-            KeyValuePairText("Certified", if (credentialInfo.credential.isCertified) "Yes" else "No")
-            KeyValuePairText("Issuer provided data", "${credentialInfo.credential.issuerProvidedData.size} bytes")
-            KeyValuePairText("Usage Count", credentialInfo.credential.usageCount.toString())
+            KeyValuePairText("类型", credentialInfo.credential::class.simpleName.toString())
+            KeyValuePairText("标识符", credentialInfo.credential.identifier)
+            KeyValuePairText("域", credentialInfo.credential.domain)
+            KeyValuePairText("生效时间", formattedDateTime(credentialInfo.credential.validFrom))
+            KeyValuePairText("失效时间", formattedDateTime(credentialInfo.credential.validUntil))
+            KeyValuePairText("已认证", if (credentialInfo.credential.isCertified) "是" else "否")
+            KeyValuePairText("发行方数据", "${credentialInfo.credential.issuerProvidedData.size} 字节")
+            KeyValuePairText("使用次数", credentialInfo.credential.usageCount.toString())
             when (credentialInfo.credential) {
                 is MdocCredential -> {
                     val issuerSigned = Cbor.decode(credentialInfo.credential.issuerProvidedData)
                     val issuerAuth = issuerSigned.get("issuerAuth").asCoseSign1
                     val msoBytes = issuerAuth.payload!!
-                    KeyValuePairText("MSO size", "${msoBytes.size} bytes")
-                    KeyValuePairText("ISO mdoc DocType", credentialInfo.credential.docType)
+                    KeyValuePairText("MSO 大小", "${msoBytes.size} 字节")
+                    KeyValuePairText("ISO mdoc 文档类型", credentialInfo.credential.docType)
                     KeyValuePairText(
-                        keyText = "ISO mdoc DS Key Certificate",
+                        keyText = "ISO mdoc 签名证书",
                         valueText = buildAnnotatedString {
                             withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                                append("Click for details")
+                                append("点击查看详情")
                             }
                         },
                         modifier = Modifier.clickable {
@@ -88,7 +88,7 @@ fun CredentialViewerScreen(
                     )
                 }
                 is SdJwtVcCredential -> {
-                    KeyValuePairText("Verifiable Credential Type", credentialInfo.credential.vct)
+                    KeyValuePairText("可验证凭据类型", credentialInfo.credential.vct)
                     // TODO: Show cert chain for key used to sign issuer-signed data. Involves
                     //  getting this over the network as specified in section 5 "JWT VC Issuer Metadata"
                     //  of https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/ ... how annoying
@@ -96,27 +96,27 @@ fun CredentialViewerScreen(
             }
 
             if (credentialInfo.credential is SecureAreaBoundCredential) {
-                KeyValuePairText("Secure Area", credentialInfo.credential.secureArea.displayName)
-                KeyValuePairText("Secure Area Identifier", credentialInfo.credential.secureArea.identifier)
-                KeyValuePairText("Device Key Algorithm", credentialInfo.keyInfo!!.algorithm.description)
-                KeyValuePairText("Device Key Invalidated",
+                KeyValuePairText("安全区域", credentialInfo.credential.secureArea.displayName)
+                KeyValuePairText("安全区域标识", credentialInfo.credential.secureArea.identifier)
+                KeyValuePairText("设备密钥算法", credentialInfo.keyInfo!!.algorithm.description)
+                KeyValuePairText("设备密钥已失效",
                     buildAnnotatedString {
                         if (credentialInfo.keyInvalidated) {
                             withStyle(style = SpanStyle(
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.error
                             )) {
-                                append("YES")
+                                append("是")
                             }
                         } else {
-                            append("No")
+                            append("否")
                         }
                     })
                 KeyValuePairText(
-                    keyText = "Device Key Attestation",
+                    keyText = "设备密钥证明",
                     valueText = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                            append("Click for details")
+                            append("点击查看详情")
                         }
                     },
                     modifier = Modifier.clickable {
@@ -125,20 +125,20 @@ fun CredentialViewerScreen(
                             if (attestation.certChain != null) {
                                 onViewCertificateChain(Cbor.encode(attestation.certChain!!.toDataItem()).toBase64Url())
                             } else {
-                                showToast("No attestation for Device Key")
+                                showToast("未找到设备密钥证明")
                             }
                         }
                     }
                 )
             } else {
-                KeyValuePairText("Secure Area", "N/A")
+                KeyValuePairText("安全区域", "不适用")
             }
 
             KeyValuePairText(
-                keyText = "Claims",
+                keyText = "声明",
                 valueText = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                        append("Click for details")
+                        append("点击查看详情")
                     }
                 },
                 modifier = Modifier.clickable {

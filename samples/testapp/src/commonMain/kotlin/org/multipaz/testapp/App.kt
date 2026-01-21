@@ -806,7 +806,7 @@ class App private constructor (val promptModel: PromptModel) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Initializing...")
+                Text(text = "正在初始化...")
             }
             return
         }
@@ -1109,7 +1109,7 @@ class App private constructor (val promptModel: PromptModel) {
                                     navController.navigateUp()
                                 }
                             }) {
-                                Text("Cancel Provisioning")
+                                Text("取消配置")
                             }
                             Spacer(modifier = Modifier.weight(1.0f))
                         }
