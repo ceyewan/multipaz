@@ -102,7 +102,7 @@ fun DocumentStoreScreen(
         AlertDialog(
             onDismissRequest = {},
             title = { Text(text = "创建身份文件") },
-            text = { Text(text = "创建身份文件和凭证可能需要一些时间。" +
+            text = { Text(text = "正在使用 ECDSA 算法创建身份文件和凭证，可能需要一些时间。" +
             "过程完成后，此对话框将消失。") },
             confirmButton = {
                 Button(
@@ -351,11 +351,11 @@ fun DocumentStoreScreen(
         item {
             SettingMultipleChoice(
                 title = "设备密钥算法",
-                choices = Algorithm.entries.mapNotNull { if (it.isSigning) it.name else null },
-                initialChoice = deviceKeyAlgorithm.value.toString(),
+                choices = listOf("ECDSA"),
+                initialChoice = "ECDSA",
                 onChoiceSelected = { choice ->
-                    val algorithm = Algorithm.entries.find { it.name == choice }!!
-                    deviceKeyAlgorithm.value = algorithm
+                    // 固定使用 ESP256 (ECDSA)
+                    deviceKeyAlgorithm.value = Algorithm.ESP256
                 },
             )
         }
@@ -374,10 +374,11 @@ fun DocumentStoreScreen(
         item {
             SettingMultipleChoice(
                 title = "文档签名算法",
-                choices = Algorithm.entries.mapNotNull { if (it.fullySpecified && it.isSigning) it.name else null },
-                initialChoice = documentSigningAlgorithm.value.toString(),
+                choices = listOf("ECDSA"),
+                initialChoice = "ECDSA",
                 onChoiceSelected = { choice ->
-                    documentSigningAlgorithm.value = Algorithm.entries.find { it.name == choice }!!
+                    // 固定使用 ESP256 (ECDSA)
+                    documentSigningAlgorithm.value = Algorithm.ESP256
                 },
             )
         }
