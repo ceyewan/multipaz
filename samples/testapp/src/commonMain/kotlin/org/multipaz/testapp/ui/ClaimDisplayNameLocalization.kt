@@ -30,11 +30,11 @@ private val displayNameTranslations =
                 "Google Wallet ID pass" to "Google 钱包身份证",
 
                 // ========== 请求类型名称 ==========
-                "US Transportation" to "美国交通部",
+                "US Transportation" to "交通信息",
                 "Mandatory Data Elements" to "必填数据项",
                 "All Data Elements" to "所有数据项",
-                "Age Over 18 (ZKP)" to "年满18周岁（零知识证明）",
-                "Age Over 21 (ZKP)" to "年满21周岁（零知识证明）",
+                "Age Over 18 (ZKP)" to "年满18周岁（ZKP）",
+                "Age Over 21 (ZKP)" to "年满21周岁（ZKP）",
                 "Age Over 18 + Portrait" to "年满18周岁 + 人像",
                 "Age Over 21 + Portrait" to "年满21周岁 + 人像",
                 "Name and Address (Partially Stored)" to "姓名和地址（部分存储）",

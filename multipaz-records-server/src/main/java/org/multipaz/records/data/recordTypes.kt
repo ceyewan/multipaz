@@ -11,7 +11,7 @@ import org.multipaz.documenttype.knowntypes.Options
  */
 val recordTypes = RecordType.buildMap {
     addComplex("core") {
-        displayName = "Core personal information"
+        displayName = "核心个人信息"
         addString(
             identifier = "family_name",
             displayName = "姓",
@@ -188,12 +188,12 @@ val recordTypes = RecordType.buildMap {
             )
             addDate(
                 identifier = "issue_date",
-                displayName = "Date of Issue",
+                displayName = "签发日期",
                 description = "Date when mDL holder was licensed for this type of vehicle",
             )
             addDate(
                 identifier = "expiry_date",
-                displayName = "Date of Expiry",
+                displayName = "失效日期",
                 description = "Date until mDL holder is licensed for this type of vehicle",
             )
         }
@@ -290,7 +290,7 @@ val recordTypes = RecordType.buildMap {
         )
         addString(
             identifier = "ticket_id",
-            displayName = "Ticket Number",
+            displayName = "票号",
             description = "Ticket identification/reference number issued at the purchase time.",
             icon = Icon.NUMBERS,
         )
