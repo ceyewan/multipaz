@@ -162,6 +162,84 @@ private val displayNameTranslations =
                 "No" to "否",
         )
 
+/**
+ * 请求判别类型标签映射表
+ *
+ * 用于在 UI 中显示每个请求涉及的数据判别类型
+ *
+ * 判别类型说明：
+ * - 大小：数值/日期比较（如 age_in_years > 18、expiry_date > 当前日期）
+ * - 等式：字符串/枚举等式（如 document_number = "XXX123"、issuing_country = "DE"）
+ * - 布尔：布尔值判别（如 age_over_18 = true/false）
+ * - 有效性：凭证有效性（如 expiry_date、issuing_authority、签名验证）
+ */
+private val requestVerificationTypeLabels = mapOf(
+    // ========== Driving License 请求 ==========
+    "US Transportation" to "大小/等式/布尔/有效性",
+    "Age Over 18" to "布尔",
+    "Age Over 21" to "布尔",
+    "Age Over 18 (ZKP)" to "布尔",
+    "Age Over 21 (ZKP)" to "布尔",
+    "Age Over 18 + Portrait" to "布尔",
+    "Age Over 21 + Portrait" to "布尔",
+    "Mandatory Data Elements" to "大小/等式/布尔/有效性",
+    "All Data Elements" to "大小/等式/布尔/有效性",
+    "Name and Address (Partially Stored)" to "等式",
+    "Name and Address (All Stored)" to "等式",
+
+    // ========== Age Verification 请求 ==========
+    "Age Over 18" to "布尔",
+    "Age Over 21" to "布尔",
+    "Age Over 18 (ZKP)" to "布尔",
+    "Age Over 21 (ZKP)" to "布尔",
+    "All Data Elements" to "布尔",
+
+    // ========== EUPersonalID / GermanPersonalID 请求 ==========
+    "Age Over 18" to "布尔",
+    "Age Over 18 (ZKP)" to "布尔",
+    "Age Over 18 + Portrait" to "布尔",
+    "Mandatory Data Elements" to "等式/有效性",
+    "All Data Elements" to "大小/等式/布尔/有效性",
+
+    // ========== IDPass 请求 ==========
+    "Age Over 18" to "布尔",
+    "Age Over 21" to "布尔",
+    "Age Over 18 (ZKP)" to "布尔",
+    "Age Over 21 (ZKP)" to "布尔",
+    "Age Over 18 + Portrait" to "布尔",
+    "Age Over 21 + Portrait" to "布尔",
+    "Mandatory Data Elements" to "等式/有效性",
+    "All Data Elements" to "大小/等式/布尔/有效性",
+
+    // ========== PhotoID 请求 ==========
+    "Age Over 18" to "布尔",
+    "Age Over 18 (ZKP)" to "布尔",
+    "Age Over 18 + Portrait" to "布尔",
+    "Mandatory Data Elements" to "等式",
+    "All Data Elements" to "大小/等式/布尔",
+
+    // ========== EUCertificateOfResidence 请求 ==========
+    "Age Over 18" to "布尔",
+    "Mandatory Data Elements" to "等式/有效性",
+    "All Data Elements" to "大小/等式/布尔/有效性",
+
+    // ========== Loyalty 请求 ==========
+    "Mandatory Data Elements" to "等式",
+    "All Data Elements" to "等式",
+
+    // ========== UtopiaMovieTicket 请求 ==========
+    "Prepaid Parking" to "布尔",
+    "Ticket Number" to "等式",
+    "All Data Elements" to "等式/布尔",
+
+    // ========== UtopiaNaturalization 请求 ==========
+    "All Data Elements" to "等式",
+)
+
+/** 获取请求的判别类型标签 */
+fun getRequestVerificationTypeLabel(requestDisplayName: String): String =
+        requestVerificationTypeLabels[requestDisplayName] ?: ""
+
 /** 获取 Claim 的本地化显示名称 如果有中文翻译则返回中文，否则返回原始英文名称 */
 val Claim.localizedDisplayName: String
     get() = displayNameTranslations[displayName] ?: displayName
