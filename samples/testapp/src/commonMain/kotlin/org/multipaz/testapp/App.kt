@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -1156,14 +1157,17 @@ class App private constructor (val promptModel: PromptModel) {
                                     nonce: ByteString?,
                                     eReaderKey: EcPrivateKey?,
                                     metadata: ShowResponseMetadata ->
-                                val route = ShowResponseDestination.route +
-                                        "/${vpToken?.let { Json.encodeToString(it) }?.encodeToByteArray()?.toBase64Url() ?: "_"}" +
-                                        "/${deviceResponse?.let { Cbor.encode(it).toBase64Url() } ?: "_"}" +
-                                        "/${Cbor.encode(sessionTranscript).toBase64Url()}" +
-                                        "/${nonce?.let { nonce.toByteArray().toBase64Url() } ?: "_"}" +
-                                        "/${eReaderKey?.let { Cbor.encode(eReaderKey.toCoseKey().toDataItem()).toBase64Url() } ?: "_"}" +
-                                        "/${Cbor.encode(metadata.toDataItem()).toBase64Url()}"
-                                navController.navigate(route)
+                                val payloadId = ShowResponsePayloadStore.put(
+                                    ShowResponsePayload(
+                                        vpToken = vpToken,
+                                        deviceResponse = deviceResponse,
+                                        sessionTranscript = sessionTranscript,
+                                        nonce = nonce,
+                                        eReaderKey = eReaderKey,
+                                        metadata = metadata,
+                                    )
+                                )
+                                navController.navigate("${ShowResponseDestination.route}/$payloadId")
                             }
                         )
                     }
@@ -1178,48 +1182,92 @@ class App private constructor (val promptModel: PromptModel) {
                                     nonce: ByteString?,
                                     eReaderKey: EcPrivateKey?,
                                     metadata: ShowResponseMetadata ->
-                                val route = ShowResponseDestination.route +
-                                        "/${vpToken?.let { Json.encodeToString(it) }?.encodeToByteArray()?.toBase64Url() ?: "_"}" +
-                                        "/${deviceResponse?.let { Cbor.encode(it).toBase64Url() } ?: "_"}" +
-                                        "/${Cbor.encode(sessionTranscript).toBase64Url()}" +
-                                        "/${nonce?.let { nonce.toByteArray().toBase64Url() } ?: "_"}" +
-                                        "/${eReaderKey?.let { Cbor.encode(eReaderKey.toCoseKey().toDataItem()).toBase64Url() } ?: "_"}" +
-                                        "/${Cbor.encode(metadata.toDataItem()).toBase64Url()}"
-                                navController.navigate(route)
+                                val payloadId = ShowResponsePayloadStore.put(
+                                    ShowResponsePayload(
+                                        vpToken = vpToken,
+                                        deviceResponse = deviceResponse,
+                                        sessionTranscript = sessionTranscript,
+                                        nonce = nonce,
+                                        eReaderKey = eReaderKey,
+                                        metadata = metadata,
+                                    )
+                                )
+                                navController.navigate("${ShowResponseDestination.route}/$payloadId")
                             }
                         )
+                    }
+                    composable(
+                        route = ShowResponseDestination.routeWithPayload,
+                        arguments = ShowResponseDestination.payloadArguments
+                    ) { backStackEntry ->
+                        val payloadId = backStackEntry.arguments
+                            ?.getString(ShowResponseDestination.PAYLOAD_ID)
+                        val payload = payloadId?.let { ShowResponsePayloadStore.get(it) }
+                        if (payload == null) {
+                            ShowResponseError(message = "无法显示响应：数据已丢失或已过期")
+                        } else {
+                            ShowResponseScreen(
+                                vpToken = payload.vpToken,
+                                deviceResponse = payload.deviceResponse,
+                                sessionTranscript = payload.sessionTranscript,
+                                nonce = payload.nonce,
+                                eReaderKey = payload.eReaderKey,
+                                metadata = payload.metadata,
+                                issuerTrustManager = issuerTrustManager,
+                                documentTypeRepository = documentTypeRepository,
+                                zkSystemRepository = zkSystemRepository,
+                                onViewCertChain = { certChain ->
+                                    val encodedCertificateData = Cbor.encode(certChain.toDataItem()).toBase64Url()
+                                    navController.navigate(CertificateViewerDestination.route + "/${encodedCertificateData}")
+                                }
+                            )
+                        }
                     }
                     composable(
                         route = ShowResponseDestination.routeWithArgs,
                         arguments = ShowResponseDestination.arguments
                     ) { backStackEntry ->
-                        val vpToken = backStackEntry.arguments?.getString(ShowResponseDestination.VP_TOKEN)
-                            ?.let { if (it != "_") Json.decodeFromString<JsonObject>(it.fromBase64Url().decodeToString()) else null }
-                        val deviceResponse = backStackEntry.arguments?.getString(ShowResponseDestination.DEVICE_RESPONSE)
-                            ?.let { if (it != "_") Cbor.decode(it.fromBase64Url()) else null }
-                        val sessionTranscript = backStackEntry.arguments!!.getString(ShowResponseDestination.SESSION_TRANSCRIPT)!!
-                            .fromBase64Url().let { Cbor.decode(it) }
-                        val nonce = backStackEntry.arguments?.getString(ShowResponseDestination.NONCE)
-                            ?.let { if (it != "_") ByteString(it.fromBase64Url()) else null }
-                        val eReaderKey = backStackEntry.arguments?.getString(ShowResponseDestination.EREADERKEY)
-                            ?.let { if (it != "_") Cbor.decode(it.fromBase64Url()).asCoseKey.ecPrivateKey else null }
-                        val metadata = backStackEntry.arguments!!.getString(ShowResponseDestination.METADATA)!!
-                            .fromBase64Url().let { ShowResponseMetadata.Companion.fromDataItem(Cbor.decode(it)) }
-                        ShowResponseScreen(
-                            vpToken = vpToken,
-                            deviceResponse = deviceResponse,
-                            sessionTranscript = sessionTranscript,
-                            nonce = nonce,
-                            eReaderKey = eReaderKey,
-                            metadata = metadata,
-                            issuerTrustManager = issuerTrustManager,
-                            documentTypeRepository = documentTypeRepository,
-                            zkSystemRepository = zkSystemRepository,
-                            onViewCertChain = { certChain ->
-                                val encodedCertificateData = Cbor.encode(certChain.toDataItem()).toBase64Url()
-                                navController.navigate(CertificateViewerDestination.route + "/${encodedCertificateData}")
-                            }
-                        )
+                        val payload = runCatching {
+                            val vpToken = backStackEntry.arguments?.getString(ShowResponseDestination.VP_TOKEN)
+                                ?.let { if (it != "_") Json.decodeFromString<JsonObject>(it.fromBase64Url().decodeToString()) else null }
+                            val deviceResponse = backStackEntry.arguments?.getString(ShowResponseDestination.DEVICE_RESPONSE)
+                                ?.let { if (it != "_") Cbor.decode(it.fromBase64Url()) else null }
+                            val sessionTranscript = backStackEntry.arguments!!.getString(ShowResponseDestination.SESSION_TRANSCRIPT)!!
+                                .fromBase64Url().let { Cbor.decode(it) }
+                            val nonce = backStackEntry.arguments?.getString(ShowResponseDestination.NONCE)
+                                ?.let { if (it != "_") ByteString(it.fromBase64Url()) else null }
+                            val eReaderKey = backStackEntry.arguments?.getString(ShowResponseDestination.EREADERKEY)
+                                ?.let { if (it != "_") Cbor.decode(it.fromBase64Url()).asCoseKey.ecPrivateKey else null }
+                            val metadata = backStackEntry.arguments!!.getString(ShowResponseDestination.METADATA)!!
+                                .fromBase64Url().let { ShowResponseMetadata.Companion.fromDataItem(Cbor.decode(it)) }
+                            ShowResponsePayload(
+                                vpToken = vpToken,
+                                deviceResponse = deviceResponse,
+                                sessionTranscript = sessionTranscript,
+                                nonce = nonce,
+                                eReaderKey = eReaderKey,
+                                metadata = metadata,
+                            )
+                        }.getOrNull()
+                        if (payload == null) {
+                            ShowResponseError(message = "无法解析响应：参数过大或数据损坏")
+                        } else {
+                            ShowResponseScreen(
+                                vpToken = payload.vpToken,
+                                deviceResponse = payload.deviceResponse,
+                                sessionTranscript = payload.sessionTranscript,
+                                nonce = payload.nonce,
+                                eReaderKey = payload.eReaderKey,
+                                metadata = payload.metadata,
+                                issuerTrustManager = issuerTrustManager,
+                                documentTypeRepository = documentTypeRepository,
+                                zkSystemRepository = zkSystemRepository,
+                                onViewCertChain = { certChain ->
+                                    val encodedCertificateData = Cbor.encode(certChain.toDataItem()).toBase64Url()
+                                    navController.navigate(CertificateViewerDestination.route + "/${encodedCertificateData}")
+                                }
+                            )
+                        }
                     }
                     composable(route = IsoMdocMultiDeviceTestingDestination.route) {
                         IsoMdocMultiDeviceTestingScreen(
@@ -1274,6 +1322,17 @@ class App private constructor (val promptModel: PromptModel) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ShowResponseError(message: String) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = message)
     }
 }
 

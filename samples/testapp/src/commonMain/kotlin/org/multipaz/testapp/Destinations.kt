@@ -198,13 +198,18 @@ data object DcRequestDestination : Destination {
 data object ShowResponseDestination : Destination {
     override val route = "show_response"
     override val title = Res.string.show_response_title
+    const val PAYLOAD_ID = "payload_id_arg"
     const val VP_TOKEN = "vp_token_arg"
     const val DEVICE_RESPONSE = "device_response_arg"
     const val SESSION_TRANSCRIPT = "session_transcript_arg"
     const val NONCE = "nonce_arg"
     const val EREADERKEY = "ereaderkey_arg"
     const val METADATA = "metadata_arg"
+    val routeWithPayload = "$route/{$PAYLOAD_ID}"
     val routeWithArgs = "$route/{$VP_TOKEN}/{$DEVICE_RESPONSE}/{$SESSION_TRANSCRIPT}/{$NONCE}/{$EREADERKEY}/{$METADATA}"
+    val payloadArguments = listOf(
+        navArgument(PAYLOAD_ID) { type = NavType.StringType },
+    )
     val arguments = listOf(
         navArgument(VP_TOKEN) { type = NavType.StringType },
         navArgument(DEVICE_RESPONSE) { type = NavType.StringType },
