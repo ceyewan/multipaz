@@ -46,7 +46,7 @@ fun CredentialClaimsViewerScreen(
                     Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = claim.localizedDisplayName,
+                        text = claim.localizedDisplayNameWithType,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium,
                     )

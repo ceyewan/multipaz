@@ -1,6 +1,9 @@
 package org.multipaz.testapp.ui
 
 import org.multipaz.claim.Claim
+import org.multipaz.documenttype.DocumentAttributeType
+import org.multipaz.documenttype.IntegerOption
+import org.multipaz.documenttype.StringOption
 
 /**
  * 属性显示名称的中文翻译映射表
@@ -239,6 +242,49 @@ private val requestVerificationTypeLabels = mapOf(
 /** 获取请求的判别类型标签 */
 fun getRequestVerificationTypeLabel(requestDisplayName: String): String =
         requestVerificationTypeLabels[requestDisplayName] ?: ""
+
+/**
+ * 获取 Claim 的数据类型标签
+ *
+ * 根据属性类型返回对应的中文名称：
+ * - Number → 数值
+ * - String → 字符串
+ * - Date/DateTime → 日期
+ * - Boolean → 布尔值
+ * - StringOptions → 枚举
+ * - IntegerOptions → 枚举
+ * - Picture/Blob → 图片/二进制
+ * - ComplexType → 复合类型
+ */
+fun getClaimDataTypeLabel(claim: Claim): String {
+    if (claim.attribute == null) {
+        return ""
+    }
+
+    return when (claim.attribute.type) {
+        DocumentAttributeType.Number -> "数值"
+        DocumentAttributeType.String -> "字符串"
+        DocumentAttributeType.Date, DocumentAttributeType.DateTime -> "日期"
+        DocumentAttributeType.Boolean -> "布尔值"
+        is DocumentAttributeType.StringOptions -> "枚举"
+        is DocumentAttributeType.IntegerOptions -> "枚举"
+        DocumentAttributeType.Picture -> "图片"
+        DocumentAttributeType.Blob -> "二进制"
+        DocumentAttributeType.ComplexType -> "复合类型"
+    }
+}
+
+/** 获取 Claim 的本地化显示名称（包含数据类型标签） */
+val Claim.localizedDisplayNameWithType: String
+    get() {
+        val localizedName = displayNameTranslations[displayName] ?: displayName
+        val typeLabel = getClaimDataTypeLabel(this)
+        return if (typeLabel.isNotEmpty()) {
+            "$localizedName（$typeLabel）"
+        } else {
+            localizedName
+        }
+    }
 
 /** 获取 Claim 的本地化显示名称 如果有中文翻译则返回中文，否则返回原始英文名称 */
 val Claim.localizedDisplayName: String
