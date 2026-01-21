@@ -26,6 +26,7 @@ import org.multipaz.presentment.model.PresentmentModel
 import org.multipaz.presentment.model.PresentmentSource
 import org.multipaz.prompt.PromptModel
 import org.multipaz.testapp.TestAppSettingsModel
+import org.multipaz.testapp.ui.localizeDisplayName
 import org.multipaz.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -161,7 +162,8 @@ fun EdlMdocSharingScreen(
                         containerColor = DriverLicenseGray
                     )
                 }
-            }
+            },
+            claimDisplayNameLocalizer = ::localizeDisplayName
         )
     }
 }

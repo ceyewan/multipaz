@@ -74,6 +74,7 @@ private const val TAG = "Presentment"
  * @param onlyShowConsentPrompt if `true` only the consent prompt will be shown, never any other graphics. This is
  *   useful if using a translucent activity.
  * @param showCancelAsBack if `true` the cancel button will say "Back" instead of "Cancel".
+ * @param claimDisplayNameLocalizer optional function to localize claim display names for UI display.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -88,6 +89,7 @@ fun Presentment(
     onPresentmentComplete: () -> Unit,
     onlyShowConsentPrompt: Boolean = false,
     showCancelAsBack: Boolean = false,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     val promptModel = remember { PromptModel.get(presentmentModel.presentmentScope.coroutineContext) }
     val coroutineScope = rememberCoroutineScope { promptModel }
@@ -117,7 +119,8 @@ fun Presentment(
                 appName = appName,
                 appIconPainter = appIconPainter,
                 imageLoader = imageLoader,
-                showCancelAsBack = showCancelAsBack
+                showCancelAsBack = showCancelAsBack,
+                claimDisplayNameLocalizer = claimDisplayNameLocalizer
             )
         }
         PresentmentModel.State.COMPLETED -> {
@@ -256,7 +259,8 @@ private fun ConsentPrompt(
     appName: String?,
     appIconPainter: Painter?,
     imageLoader: ImageLoader,
-    showCancelAsBack: Boolean
+    showCancelAsBack: Boolean,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     // TODO: use sheetGesturesEnabled=false when available - see
     //  https://issuetracker.google.com/issues/288211587 for details
@@ -285,6 +289,7 @@ private fun ConsentPrompt(
             }
             presentmentModel.consentObtained(null)
         },
-        showCancelAsBack = showCancelAsBack
+        showCancelAsBack = showCancelAsBack,
+        claimDisplayNameLocalizer = claimDisplayNameLocalizer
     )
 }

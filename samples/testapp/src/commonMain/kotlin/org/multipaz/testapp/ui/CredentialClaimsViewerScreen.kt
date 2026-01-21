@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import org.multipaz.documenttype.DocumentTypeRepository
 import org.multipaz.testapp.DocumentModel
 import org.multipaz.compose.claim.RenderClaimValue
+import org.multipaz.testapp.ui.localizedDisplayName
 
 @Composable
 fun CredentialClaimsViewerScreen(
@@ -45,7 +46,7 @@ fun CredentialClaimsViewerScreen(
                     Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = claim.displayName,
+                        text = claim.localizedDisplayName,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium,
                     )

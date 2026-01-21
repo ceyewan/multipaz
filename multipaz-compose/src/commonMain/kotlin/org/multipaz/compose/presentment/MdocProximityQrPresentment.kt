@@ -65,6 +65,7 @@ private const val TAG = "MdocProximityQrPresentment"
  *   creating the transports.
  * @param showQrCode a composable which shows the QR code and asks the user to scan it.
  * @param transportFactory the [MdocTransportFactory] to use for creating a transport.
+ * @param claimDisplayNameLocalizer optional function to localize claim display names for UI display.
  */
 @Composable
 fun MdocProximityQrPresentment(
@@ -80,6 +81,7 @@ fun MdocProximityQrPresentment(
     showQrButton: @Composable (onQrButtonClicked: (settings: MdocProximityQrSettings) -> Unit) -> Unit,
     showQrCode: @Composable (uri: String) -> Unit,
     transportFactory: MdocTransportFactory = MdocTransportFactory.Default,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     val coroutineScope = rememberCoroutineScope { promptModel }
     val state = presentmentModel.state.collectAsState()
@@ -153,6 +155,7 @@ fun MdocProximityQrPresentment(
                     imageLoader = imageLoader,
                     onlyShowConsentPrompt = false,
                     showCancelAsBack = false,
+                    claimDisplayNameLocalizer = claimDisplayNameLocalizer
                 )
             }
         }

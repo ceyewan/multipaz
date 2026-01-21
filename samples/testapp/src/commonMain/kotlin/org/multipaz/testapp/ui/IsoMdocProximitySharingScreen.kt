@@ -154,7 +154,8 @@ fun IsoMdocProximitySharingScreen(
                             Text("取消")
                         }
                     }
-                }
+                },
+                claimDisplayNameLocalizer = ::localizeDisplayName
             )
         }
     }

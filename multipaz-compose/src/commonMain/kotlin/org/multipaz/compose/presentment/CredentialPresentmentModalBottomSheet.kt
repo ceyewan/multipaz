@@ -221,6 +221,7 @@ private fun setMatch(
  * @param onConfirm called when the user presses the "Share" button, returns the user's selection.
  * @param onCancel called when the sheet is dismissed.
  * @param showCancelAsBack if `true`, the cancel button will say "Back" instead of "Cancel".
+ * @param claimDisplayNameLocalizer optional function to localize claim display names.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -236,7 +237,8 @@ fun CredentialPresentmentModalBottomSheet(
     appIconPainter: Painter? = null,
     onConfirm: (selection: CredentialPresentmentSelection) -> Unit,
     onCancel: () -> Unit = {},
-    showCancelAsBack: Boolean = false
+    showCancelAsBack: Boolean = false,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     val navController = rememberNavController()
     val appInfo = remember {
@@ -313,7 +315,8 @@ fun CredentialPresentmentModalBottomSheet(
                         onCancel = onCancel,
                         showCancelAsBack = showCancelAsBack,
                         sheetState = sheetState,
-                        pagerState = pagerState
+                        pagerState = pagerState,
+                        claimDisplayNameLocalizer = claimDisplayNameLocalizer
                     )
                 }
 
@@ -422,7 +425,8 @@ private fun ConsentPage(
     onCancel: () -> Unit,
     showCancelAsBack: Boolean,
     sheetState: SheetState,
-    pagerState: PagerState
+    pagerState: PagerState,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     val scrollState = rememberScrollState()
 
@@ -479,7 +483,8 @@ private fun ConsentPage(
                             requesterDisplayData = requesterDisplayData,
                             trustPoint = trustPoint,
                             appInfo = appInfo,
-                            onChooseMatch = onChooseMatch
+                            onChooseMatch = onChooseMatch,
+                            claimDisplayNameLocalizer = claimDisplayNameLocalizer
                         )
                     }
                 }
@@ -541,7 +546,8 @@ private fun CredentialSetViewer(
     requesterDisplayData: RequesterDisplayData,
     trustPoint: TrustPoint?,
     appInfo: ApplicationInfo?,
-    onChooseMatch: (combinationNum: Int, elementNum: Int) -> Unit
+    onChooseMatch: (combinationNum: Int, elementNum: Int) -> Unit,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
 
     val entries = mutableListOf<@Composable () -> Unit>()
@@ -614,15 +620,15 @@ private fun CredentialSetViewer(
         entries.add {
             if (storedClaims.size == 0) {
                 SharedStoredText(text = sharedWithText)
-                ClaimsGridView(claims = notStoredClaims, useColumns = true)
+                ClaimsGridView(claims = notStoredClaims, useColumns = true, claimDisplayNameLocalizer = claimDisplayNameLocalizer)
             } else if (notStoredClaims.size == 0) {
                 SharedStoredText(text = sharedWithAndStoredByText)
-                ClaimsGridView(claims = storedClaims, useColumns = true)
+                ClaimsGridView(claims = storedClaims, useColumns = true, claimDisplayNameLocalizer = claimDisplayNameLocalizer)
             } else {
                 SharedStoredText(text = sharedWithText)
-                ClaimsGridView(claims = notStoredClaims, useColumns = true)
+                ClaimsGridView(claims = notStoredClaims, useColumns = true, claimDisplayNameLocalizer = claimDisplayNameLocalizer)
                 SharedStoredText(text = sharedWithAndStoredByText)
-                ClaimsGridView(claims = storedClaims, useColumns = true)
+                ClaimsGridView(claims = storedClaims, useColumns = true, claimDisplayNameLocalizer = claimDisplayNameLocalizer)
             }
         }
     }
@@ -886,12 +892,13 @@ private fun ButtonSection(
 @Composable
 private fun ClaimsGridView(
     claims: List<Claim>,
-    useColumns: Boolean
+    useColumns: Boolean,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     if (!useColumns) {
         for (claim in claims) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                ClaimsView(claim = claim, modifier = Modifier.weight(1.0f))
+                ClaimsView(claim = claim, modifier = Modifier.weight(1.0f), claimDisplayNameLocalizer = claimDisplayNameLocalizer)
             }
         }
     } else {
@@ -901,17 +908,18 @@ private fun ClaimsGridView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                ClaimsView(claim = claims[n], modifier = Modifier.weight(1.0f))
+                ClaimsView(claim = claims[n], modifier = Modifier.weight(1.0f), claimDisplayNameLocalizer = claimDisplayNameLocalizer)
                 ClaimsView(
                     claim = claims[n + 1],
-                    modifier = Modifier.weight(1.0f)
+                    modifier = Modifier.weight(1.0f),
+                    claimDisplayNameLocalizer = claimDisplayNameLocalizer
                 )
             }
             n += 2
         }
         if (n < claims.size) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                ClaimsView(claim = claims[n], modifier = Modifier.weight(1.0f))
+                ClaimsView(claim = claims[n], modifier = Modifier.weight(1.0f), claimDisplayNameLocalizer = claimDisplayNameLocalizer)
             }
         }
     }
@@ -924,6 +932,7 @@ private fun ClaimsGridView(
 private fun ClaimsView(
     modifier: Modifier,
     claim: Claim,
+    claimDisplayNameLocalizer: (String) -> String = { it }
 ) {
     Row(
         verticalAlignment = Alignment.Companion.CenterVertically,
@@ -937,7 +946,7 @@ private fun ClaimsView(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = claim.displayName,
+            text = claimDisplayNameLocalizer(claim.displayName),
             fontWeight = FontWeight.Companion.Normal,
             style = MaterialTheme.typography.bodySmall
         )

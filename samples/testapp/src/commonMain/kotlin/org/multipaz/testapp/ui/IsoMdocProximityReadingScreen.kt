@@ -124,7 +124,7 @@ fun IsoMdocProximityReadingScreen(
     for (documentType in TestAppUtils.provisionedDocumentTypes) {
         for (sampleRequest in documentType.cannedRequests) {
             requestOptions.add(RequestPickerEntry(
-                displayName = "${documentType.displayName}: ${sampleRequest.displayName}",
+                displayName = "${localizeDisplayName(documentType.displayName)}: ${localizeDisplayName(sampleRequest.displayName)}",
                 documentType = documentType,
                 sampleRequest = sampleRequest
             ))

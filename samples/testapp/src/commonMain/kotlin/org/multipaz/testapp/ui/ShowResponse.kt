@@ -47,6 +47,7 @@ import org.multipaz.verification.MdocVerifiedPresentation
 import org.multipaz.verification.VerificationUtil.verifyMdocDeviceResponse
 import org.multipaz.verification.VerificationUtil.verifyOpenID4VPResponse
 import org.multipaz.testapp.ShowResponseMetadata
+import org.multipaz.testapp.ui.localizedDisplayName
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -312,9 +313,9 @@ private suspend fun parseResponse(
                         for (claim in claims) {
                             val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
                                 val image = decodeImage(claim.value.asBstr)
-                                Line(claim.displayName, ValueImage(claim.render(), image))
+                                Line(claim.localizedDisplayName, ValueImage(claim.render(), image))
                             } else {
-                                Line(claim.displayName, ValueText(claim.render()))
+                                Line(claim.localizedDisplayName, ValueText(claim.render()))
                             }
                             lines.add(line)
                         }
@@ -358,9 +359,9 @@ private suspend fun parseResponse(
                     for (claim in claims) {
                         val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
                             val image = decodeImage(claim.value.jsonPrimitive.content.fromBase64Url())
-                            Line(claim.displayName + trailer, ValueImage(claim.render(), image))
+                            Line(claim.localizedDisplayName + trailer, ValueImage(claim.render(), image))
                         } else {
-                            Line(claim.displayName + trailer, ValueText(claim.render()))
+                            Line(claim.localizedDisplayName + trailer, ValueText(claim.render()))
                         }
                         lines.add(line)
                     }
