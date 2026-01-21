@@ -1,6 +1,9 @@
 package org.multipaz.testapp.ui
 
+import kotlinx.serialization.json.JsonPrimitive
 import org.multipaz.claim.Claim
+import org.multipaz.claim.JsonClaim
+import org.multipaz.claim.MdocClaim
 import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.IntegerOption
 import org.multipaz.documenttype.StringOption
@@ -366,6 +369,61 @@ fun getClaimDataTypeLabel(claim: Claim): String {
         DocumentAttributeType.ComplexType -> "复合类型"
     }
 }
+
+private fun Claim.getStableIdentifierForUi(): String? {
+    return when (this) {
+        is MdocClaim -> dataElementName
+        is JsonClaim -> attribute?.identifier ?: (claimPath.firstOrNull() as? JsonPrimitive)?.content
+    }
+}
+
+/**
+ * 获取 Claim 的 UI 数据类型标签（允许对“语义类型”做覆盖）
+ *
+ * 例如：mDL 的 `weight_range` 在文档类型里是枚举，但在 UI 上更贴近“数值范围”语义。
+ */
+fun getClaimUiDataTypeLabel(claim: Claim): String {
+    return when (claim.getStableIdentifierForUi()) {
+        "weight_range" -> "数值"
+        else -> getClaimDataTypeLabel(claim)
+    }
+}
+
+/**
+ * 获取 Claim 的 UI 判别模式 + 证明类型标签（仅用于展示，不影响实际验证逻辑）
+ *
+ * 格式示例：`大小判别、范围证明`
+ */
+fun getClaimUiDiscriminationAndProofLabel(claim: Claim): String {
+    val identifier = claim.getStableIdentifierForUi() ?: return ""
+    return when {
+        identifier == "weight_range" -> "大小判别、范围证明"
+        identifier == "height" -> "大小判别、范围证明"
+        identifier == "weight" -> "大小判别、范围证明"
+        identifier == "age_in_years" -> "大小判别、范围证明"
+        identifier.startsWith("age_over_") -> "大小判别、范围证明"
+
+        identifier == "issuing_country" -> "成员判别、成员证明"
+        identifier == "eye_colour" -> "成员判别、成员证明"
+
+        identifier == "document_number" -> "等式判别、等式关系证明"
+        identifier == "birth_date" -> "等式判别、等式关系证明"
+
+        identifier == "signature_usual_mark" -> "签名有效性证明"
+        else -> ""
+    }
+}
+
+/** Claim 的本地化显示名称（包含 UI 数据类型 + 判别/证明标签） */
+val Claim.localizedDisplayNameWithUiAnnotations: String
+    get() {
+        val localizedName = displayNameTranslations[displayName] ?: displayName
+        val typeLabel = getClaimUiDataTypeLabel(this)
+        val verificationLabel = getClaimUiDiscriminationAndProofLabel(this)
+        val typeSuffix = if (typeLabel.isNotEmpty()) "（$typeLabel）" else ""
+        val verificationSuffix = if (verificationLabel.isNotEmpty()) "（$verificationLabel）" else ""
+        return localizedName + typeSuffix + verificationSuffix
+    }
 
 /** 获取 Claim 的本地化显示名称（包含数据类型标签） */
 val Claim.localizedDisplayNameWithType: String

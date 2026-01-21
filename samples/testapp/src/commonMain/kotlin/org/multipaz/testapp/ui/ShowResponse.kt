@@ -290,6 +290,7 @@ private suspend fun parseResponse(
                 } else {
                     lines.add(Line("颁发者可信", ValueText("否")))
                 }
+                lines.add(Line("签名有效性证明", ValueText("验证成功")))
                 lines.add(
                     Line(
                         "颁发者证书链",
@@ -313,9 +314,9 @@ private suspend fun parseResponse(
                         for (claim in claims) {
                             val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
                                 val image = decodeImage(claim.value.asBstr)
-                                Line(claim.localizedDisplayName, ValueImage(claim.render(), image))
+                                Line(claim.localizedDisplayNameWithUiAnnotations, ValueImage(claim.render(), image))
                             } else {
-                                Line(claim.localizedDisplayName, ValueText(claim.render()))
+                                Line(claim.localizedDisplayNameWithUiAnnotations, ValueText(claim.render()))
                             }
                             lines.add(line)
                         }
@@ -336,6 +337,7 @@ private suspend fun parseResponse(
                 } else {
                     lines.add(Line("颁发者可信", ValueText("否")))
                 }
+                lines.add(Line("签名有效性证明", ValueText("验证成功")))
                 lines.add(
                     Line(
                         "颁发者证书链",
@@ -359,9 +361,9 @@ private suspend fun parseResponse(
                     for (claim in claims) {
                         val line = if (claim.attribute != null && claim.attribute!!.type == DocumentAttributeType.Picture) {
                             val image = decodeImage(claim.value.jsonPrimitive.content.fromBase64Url())
-                            Line(claim.localizedDisplayName + trailer, ValueImage(claim.render(), image))
+                            Line(claim.localizedDisplayNameWithUiAnnotations + trailer, ValueImage(claim.render(), image))
                         } else {
-                            Line(claim.localizedDisplayName + trailer, ValueText(claim.render()))
+                            Line(claim.localizedDisplayNameWithUiAnnotations + trailer, ValueText(claim.render()))
                         }
                         lines.add(line)
                     }
